@@ -249,7 +249,7 @@ namespace GameClient
                 else
                 {
                     Vector2 vector = Find.WorldGrid.LongLatOf(tileID);
-                    string toDisplay = $"";
+                    string toDisplay = "RTRoadTile".Translate(vector.y.ToStringLatitude(), vector.x.ToStringLongitude());
                     selectableTileLabels.Add(toDisplay);
                     selectableTiles.Add(tileID);
                 }
@@ -292,7 +292,7 @@ namespace GameClient
                 {
                     Vector2 vector = Find.WorldGrid.LongLatOf(tileID);
                     string toDisplay = "RTRoadTile".Translate(vector.y.ToStringLatitude(), vector.x.ToStringLongitude());
-                    selectableTilesLabels.Add(toDisplay);
+                    selectableTilesLabels.Add((string)toDisplay);
                     selectableTiles.Add(tileID);
                 }
             }

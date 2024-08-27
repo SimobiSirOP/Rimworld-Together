@@ -116,6 +116,7 @@
     <RTGlobalMarket>Глобальный рынок</RTGlobalMarket>
     <RTGlobalMarketMenu>Меню глобального рынка</RTGlobalMarketMenu>
     <RTGlobalMarketMenuDesc>Войти в глобальный рынок</RTGlobalMarketMenuDesc>
+    <RTGlobalMarketDisabled>Рынок отключен на этом сервере!</RTGlobalMarketDisabled>
     <RTGlobalMarketRequirement>Вам необходима консоль связи, чтобы использовать рынок!</RTGlobalMarketRequirement>
     <RTAvailableSilver>Серебра доступного для торговли: {0}</RTAvailableSilver>
     <RTNoOneToTrade>На сервере нет никого, с кем можно поторговаться!</RTNoOneToTrade>
@@ -221,7 +222,7 @@
     <RTEventSelectorDesc>Выберите событие которое хотите отправить</RTEventSelectorDesc>
     <RTEventNotEnoughSilver>Вам не хватает серебра для этого действия!</RTEventNotEnoughSilver>
     <RTEventWait>Ожидание события</RTEventWait>
-    <RTEventLetterSend>Событие - {0}</RTEventLetterSend>
+    <RTEventLetter>Событие - {0}</RTEventLetter>
     <RTEventSended>Событие отправлено!</RTEventSended>
     <RTEventSendedDesc>Ваше событие!</RTEventSendedDesc>
     
