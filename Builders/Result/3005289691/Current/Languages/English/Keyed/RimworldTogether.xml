@@ -85,6 +85,7 @@
     <RTDialogSelect>Select</RTDialogSelect>
     <RTDialogNew>New</RTDialogNew>
     <RTDialogReload>Reload</RTDialogReload>
+    <RTDialogReset>Reset</RTDialogReset>
     <RTDialogAccept>Accept</RTDialogAccept>
     <RTPlayerNotAvailable>Player is not currently available!</RTPlayerNotAvailable>
     

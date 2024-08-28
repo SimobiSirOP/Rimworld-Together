@@ -85,6 +85,7 @@
     <RTDialogSelect>Выбрать</RTDialogSelect>
     <RTDialogNew>Новый</RTDialogNew>
     <RTDialogReload>Перезапустить</RTDialogReload>
+    <RTDialogReset>Сбросить</RTDialogReset>
     <RTDialogAccept>Принять</RTDialogAccept>
     <RTPlayerNotAvailable>Пользователь не доступен прямо сейчас!</RTPlayerNotAvailable>
     
