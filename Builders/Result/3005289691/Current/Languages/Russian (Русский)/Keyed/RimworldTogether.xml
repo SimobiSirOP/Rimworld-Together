@@ -34,8 +34,9 @@
     <RTDiscordOpen>Присоединяйтесь в наш Discord!</RTDiscordOpen>
     
     <!-- Tabs -->
-
-    <RTBases>Базы игрока {0}</RTBases>
+    
+    <RTBasesLabel>Базы</RTBasesLabel>
+    <RTBases>Базы игроков: {0}</RTBases>
     <RTFocus>Фокус</RTFocus>
     
     <RTChatOnlinePlayers>{0} Игроков Онлайн</RTChatOnlinePlayers>
@@ -43,10 +44,10 @@
     <RTAutoScroll>Авто Прокручивание</RTAutoScroll>
     
     <RTPlayersMenu>Игроки</RTPlayersMenu>
-    <RTOnlinePlayers>Игроков Онлайн {0}</RTOnlinePlayers>
+    <RTOnlinePlayers>Игроков Онлайн: {0}</RTOnlinePlayers>
     
     <RTSitesMenu>Цехи</RTSitesMenu>
-    <RTPlayerSites>Цехи Игроков {0}</RTPlayerSites>
+    <RTPlayerSites>Цехи Игроков: {0}</RTPlayerSites>
 
     <!-- Connection --> 
     <RTLoginNewUser>Новый пользователь</RTLoginNewUser>
