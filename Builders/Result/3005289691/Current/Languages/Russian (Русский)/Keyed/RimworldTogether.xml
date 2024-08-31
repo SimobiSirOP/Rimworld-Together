@@ -89,6 +89,7 @@
     <RTDialogReset>Сбросить</RTDialogReset>
     <RTDialogAccept>Принять</RTDialogAccept>
     <RTPlayerNotAvailable>Пользователь не доступен прямо сейчас!</RTPlayerNotAvailable>
+    <RTFeatureDisabled>Данная опция выключена на этом сервере!</RTFeatureDisabled>
     
     <!-- Transfer -->
     
