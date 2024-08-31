@@ -1,7 +1,6 @@
 ﻿using Shared;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using static Shared.CommonEnumerators;
 using Verse;
 
@@ -13,7 +12,7 @@ namespace GameClient
         {
             PlayerFactionData data = Serializer.ConvertBytesToObject<PlayerFactionData>(packet.contents);
 
-            switch (data.stepMode)
+            switch (data._stepMode)
             {
                 case FactionStepMode.Create:
                     OnCreateFaction();
@@ -56,7 +55,7 @@ namespace GameClient
                 DialogManager.PushNewDialog(new RT_Dialog_Wait("RTFactionMemberWait".Translate()));
 
                 PlayerFactionData playerFactionData = new PlayerFactionData();
-                playerFactionData.stepMode = FactionStepMode.MemberList;
+                playerFactionData._stepMode = FactionStepMode.MemberList;
 
                 Packet packet = Packet.CreatePacketFromObject(nameof(PacketHandler.FactionPacket), playerFactionData);
                 Network.listener.EnqueuePacket(packet);
@@ -65,8 +64,8 @@ namespace GameClient
             Action r2 = delegate
             {
                 PlayerFactionData playerFactionData = new PlayerFactionData();
-                playerFactionData.stepMode = FactionStepMode.RemoveMember;
-                playerFactionData.manifestDataInt = SessionValues.chosenSettlement.Tile;
+                playerFactionData._stepMode = FactionStepMode.RemoveMember;
+                playerFactionData._dataInt = SessionValues.chosenSettlement.Tile;
 
                 Packet packet = Packet.CreatePacketFromObject(nameof(PacketHandler.FactionPacket), playerFactionData);
                 Network.listener.EnqueuePacket(packet);
@@ -77,7 +76,7 @@ namespace GameClient
                 DialogManager.PushNewDialog(new RT_Dialog_Wait("RTFactionDelete".Translate()));
 
                 PlayerFactionData playerFactionData = new PlayerFactionData();
-                playerFactionData.stepMode = FactionStepMode.Delete;
+                playerFactionData._stepMode = FactionStepMode.Delete;
 
                 Packet packet = Packet.CreatePacketFromObject(nameof(PacketHandler.FactionPacket), playerFactionData);
                 Network.listener.EnqueuePacket(packet);
@@ -111,8 +110,8 @@ namespace GameClient
                     DialogManager.PushNewDialog(new RT_Dialog_Wait("RTFactionWaitCreate".Translate()));
 
                     PlayerFactionData playerFactionData = new PlayerFactionData();
-                    playerFactionData.stepMode = FactionStepMode.Create;
-                    playerFactionData.manifestDataString = DialogManager.dialog1ResultOne;
+                    playerFactionData._stepMode = FactionStepMode.Create;
+                    playerFactionData._factionFile.name = DialogManager.dialog1ResultOne;
 
                     Packet packet = Packet.CreatePacketFromObject(nameof(PacketHandler.FactionPacket), playerFactionData);
                     Network.listener.EnqueuePacket(packet);
@@ -131,8 +130,8 @@ namespace GameClient
             Action r1 = delegate
             {
                 PlayerFactionData playerFactionData = new PlayerFactionData();
-                playerFactionData.stepMode = FactionStepMode.Promote;
-                playerFactionData.manifestDataInt = SessionValues.chosenSettlement.Tile;
+                playerFactionData._stepMode = FactionStepMode.Promote;
+                playerFactionData._dataInt = SessionValues.chosenSettlement.Tile;
 
                 Packet packet = Packet.CreatePacketFromObject(nameof(PacketHandler.FactionPacket), playerFactionData);
                 Network.listener.EnqueuePacket(packet);
@@ -141,8 +140,8 @@ namespace GameClient
             Action r2 = delegate
             {
                 PlayerFactionData playerFactionData = new PlayerFactionData();
-                playerFactionData.stepMode = FactionStepMode.Demote;
-                playerFactionData.manifestDataInt = SessionValues.chosenSettlement.Tile;
+                playerFactionData._stepMode = FactionStepMode.Demote;
+                playerFactionData._dataInt = SessionValues.chosenSettlement.Tile;
 
                 Packet packet = Packet.CreatePacketFromObject(nameof(PacketHandler.FactionPacket), playerFactionData);
                 Network.listener.EnqueuePacket(packet);
@@ -151,8 +150,8 @@ namespace GameClient
             Action r3 = delegate
             {
                 PlayerFactionData playerFactionData = new PlayerFactionData();
-                playerFactionData.stepMode = FactionStepMode.RemoveMember;
-                playerFactionData.manifestDataInt = SessionValues.chosenSettlement.Tile;
+                playerFactionData._stepMode = FactionStepMode.RemoveMember;
+                playerFactionData._dataInt = SessionValues.chosenSettlement.Tile;
 
                 Packet packet = Packet.CreatePacketFromObject(nameof(PacketHandler.FactionPacket), playerFactionData);
                 Network.listener.EnqueuePacket(packet);
@@ -190,8 +189,8 @@ namespace GameClient
             Action r1 = delegate
             {
                 PlayerFactionData playerFactionData = new PlayerFactionData();
-                playerFactionData.stepMode = FactionStepMode.AddMember;
-                playerFactionData.manifestDataInt = SessionValues.chosenSettlement.Tile;
+                playerFactionData._stepMode = FactionStepMode.AddMember;
+                playerFactionData._dataInt = SessionValues.chosenSettlement.Tile;
 
                 Packet packet = Packet.CreatePacketFromObject(nameof(PacketHandler.FactionPacket), playerFactionData);
                 Network.listener.EnqueuePacket(packet);
@@ -242,13 +241,13 @@ namespace GameClient
             {
                 ServerValues.hasFaction = true;
 
-                factionManifest.stepMode = FactionStepMode.AcceptInvite;
+                factionManifest._stepMode = FactionStepMode.AcceptInvite;
 
                 Packet packet = Packet.CreatePacketFromObject(nameof(PacketHandler.FactionPacket), factionManifest);
                 Network.listener.EnqueuePacket(packet);
             };
 
-            RT_Dialog_YesNo d1 = new RT_Dialog_YesNo("RTFactionInvitedTo".Translate(factionManifest.manifestDataString), r1, null);
+            RT_Dialog_YesNo d1 = new RT_Dialog_YesNo("RTFactionInvitedTo".Translate(factionManifest._factionFile.name), r1, null);
             DialogManager.PushNewDialog(d1);
         }
 
@@ -268,15 +267,15 @@ namespace GameClient
         {
             DialogManager.PopWaitDialog();
 
-            List<string> unraveledDatas = new List<string>();
-            for (int i = 0; i < factionManifest.manifestComplexData.Count(); i++)
+            List<string> toDisplay = new List<string>();
+            for (int i = 0; i < factionManifest._factionFile.currentMembers.Count; i++)
             {
-                unraveledDatas.Add($"{factionManifest.manifestComplexData[i]} " +
-                    $"- {(FactionRanks)int.Parse(factionManifest.manifestSecondaryComplexData[i])}");
+                toDisplay.Add($"{factionManifest._factionFile.currentMembers[i]} " +
+                    $"- {(FactionRanks)factionManifest._factionFile.currentRanks[i]}");
             }
 
             RT_Dialog_Listing d1 = new RT_Dialog_Listing("RTFactionMemberMenu".Translate(), 
-                "RTFactionMemberMenuDesc".Translate(), unraveledDatas.ToArray());
+                "RTFactionMemberMenuDesc".Translate(), toDisplay.ToArray());
 
             DialogManager.PushNewDialog(d1);
         }
