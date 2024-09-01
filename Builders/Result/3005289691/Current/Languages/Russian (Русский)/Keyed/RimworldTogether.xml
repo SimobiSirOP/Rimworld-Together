@@ -8,30 +8,32 @@
     <RTDenyIncomingTransfers>[В Игре] Отклонять все входящие передачи</RTDenyIncomingTransfers>
     <RTDenyIncomingTransfersDesc>Автоматически отклоняет передачи</RTDenyIncomingTransfersDesc>
     <RTDenyIncomingSiteRewards>[В Игре] Отклонять все входящие награды с цехов</RTDenyIncomingSiteRewards>
-    <RTDenyIncomingSiteRewardsDesc>Автоматически отклоняет передачи</RTDenyIncomingSiteRewardsDesc>
+    <RTDenyIncomingSiteRewardsDesc>Автоматически отклоняет награды с цехов</RTDenyIncomingSiteRewardsDesc>
     <RTMuteChat>[В Игре] Заглушить сообщения чата</RTMuteChat>
     <RTMuteChatDesc>Заглушает сообщения чата</RTMuteChatDesc>
     <RTServerSyncInterval>[В Игре] Интервал сохранений на сервер</RTServerSyncInterval>
     <RTServerSyncIntervalVar>{0} Дней</RTServerSyncIntervalVar>
+    <RTDays>Дней</RTDays>
+    <RTDay>День</RTDay>
     
     <RTCompatibility>Совместимость</RTCompatibility>
-    <RTConvertSave>Конвертировать сохранение для использование сервера</RTConvertSave>
+    <RTConvertSave>Конвертировать сохранение для использование сервером</RTConvertSave>
     <RTConvertSaveSuccesful>Сохранение успешно конвертировано</RTConvertSaveSuccesful>
     <RTConvertSaveButton>Конвертировать</RTConvertSaveButton>
     <RTOpenSaveFolder>Открыть папку сохранений</RTOpenSaveFolder>
     <RTConfigOpen>Открыть</RTConfigOpen>
     
-    <RTExperimental>Экспериментально</RTExperimental>
-    <RTUseVerboseLogs>Использовать подробные логи</RTUseVerboseLogs>
-    <RTUseVerboseLogsDesc>Выводит больше информации в консоль</RTUseVerboseLogsDesc>
-    <RTExtremeVerboseLogs>Использовать экстремально подробные логи</RTExtremeVerboseLogs>
-    <RTExtremeVerboseLogsDesc>Выводит ВСЮ информацию в консоль</RTExtremeVerboseLogsDesc>
+    <RTExperimental>Экспериментальное</RTExperimental>
+    <RTUseVerboseLogs>Использовать подробный вывод в журнал</RTUseVerboseLogs>
+    <RTUseVerboseLogsDesc>Выводит больше информации в журнал</RTUseVerboseLogsDesc>
+    <RTExtremeVerboseLogs>Использовать экстремально подробный вывод в журнал</RTExtremeVerboseLogs>
+    <RTExtremeVerboseLogsDesc>Выводит ВСЮ информацию в журнал</RTExtremeVerboseLogsDesc>
 
     <RTExternalSources>Внешние источники</RTExternalSources>
-    <RTWikiOpen>Взгляните на наше Вики!</RTWikiOpen>
-    <RTGithubOpen>Взгляните на наш GitHub!</RTGithubOpen>
-    <RTIncompatibilityOpen>Взгляните на наш список несовместимостей!</RTIncompatibilityOpen>
-    <RTDiscordOpen>Присоединяйтесь в наш Discord!</RTDiscordOpen>
+    <RTWikiOpen>Наш вики!</RTWikiOpen>
+    <RTGithubOpen>Наш Github!</RTGithubOpen>
+    <RTIncompatibilityOpen>Список несовместимостей!</RTIncompatibilityOpen>
+    <RTDiscordOpen>Наш Discord!</RTDiscordOpen>
     
     <!-- Tabs -->
     
@@ -41,7 +43,7 @@
     
     <RTChatOnlinePlayers>{0} Игроков Онлайн</RTChatOnlinePlayers>
     <RTChatOnlinePlayer>{0} Игрок Онлайн</RTChatOnlinePlayer>
-    <RTAutoScroll>Авто Прокручивание</RTAutoScroll>
+    <RTAutoScroll>Автопрокрутка</RTAutoScroll>
     
     <RTPlayersMenu>Игроки</RTPlayersMenu>
     <RTOnlinePlayers>Игроков Онлайн: {0}</RTOnlinePlayers>
@@ -102,10 +104,10 @@
     <RTTransferTypeDesc>Выберите способ передачи</RTTransferTypeDesc>
     <RTTransferGift>Подарок</RTTransferGift>
     <RTTransferTrade>Торговля</RTTransferTrade>
-    <RTTransferContinue>Вы уверены, что хотите продолжить передачу?</RTTransferContinue>
+    <RTTransferContinue>Вы уверены, что хотите продолжить?</RTTransferContinue>
     <RTTransferAcceptSure>Вы уверены, что хотите принять?</RTTransferAcceptSure>
     <RTTransferCancelSure>Вы уверены, что хотите отклонить?</RTTransferCancelSure>
-    <RTTransferSuccess>Передача была успешной!</RTTransferSuccess>
+    <RTTransferSuccess>Передача прошла успешно!</RTTransferSuccess>
     <RTTransferCancelled>Передача была отклонена!</RTTransferCancelled>
     <RTTransferPlayerRejected>Игрок отклонил предложение!</RTTransferPlayerRejected>
     <RTTransferError>У вас нет пешек, способных к торговле!</RTTransferError>
@@ -115,14 +117,14 @@
     <RTDialogNoTransferSpot2>Полученные вещи будут появляться в центре карты!</RTDialogNoTransferSpot2>
     <RTDialogNoTransferSpot3>Постройте зону торговли, чтобы изменить место их появления!</RTDialogNoTransferSpot3>
     <RTTransferTradeReceived>У вас есть входящее предложение на торговлю</RTTransferTradeReceived>
-    <RTTransfering>Передать предмету {0}</RTTransfering>
+    <RTTransfering>Передать предметы {0}</RTTransfering>
     <RTGlobalMarket>Глобальный рынок</RTGlobalMarket>
     <RTGlobalMarketMenu>Меню глобального рынка</RTGlobalMarketMenu>
     <RTGlobalMarketMenuDesc>Войти в глобальный рынок</RTGlobalMarketMenuDesc>
     <RTGlobalMarketDisabled>Рынок отключен на этом сервере!</RTGlobalMarketDisabled>
     <RTGlobalMarketRequirement>Вам необходима консоль связи, чтобы использовать рынок!</RTGlobalMarketRequirement>
-    <RTAvailableSilver>Серебра доступного для торговли: {0}</RTAvailableSilver>
-    <RTNoOneToTrade>На сервере нет никого, с кем можно поторговаться!</RTNoOneToTrade>
+    <RTAvailableSilver>Серебра доступного к торговле: {0}</RTAvailableSilver>
+    <RTNoOneToTrade>На сервере нет никого, способного к торговле!</RTNoOneToTrade>
     <RTTradeQuantityError>Вы пытаетесь запросить неверное количество!</RTTradeQuantityError>
     <RTTradeTooMuch>Вы пытаетесь запросить больше, чем возможно!</RTTradeTooMuch>
     <RTRequestQuantity>Количество к запросу</RTRequestQuantity>
@@ -140,7 +142,7 @@
     <RTDialogDeleteConfirm>Вы уверены, что хотите удалить сохранение?</RTDialogDeleteConfirm>
     <RTDialogDeleteSave>Удалить сохранение</RTDialogDeleteSave>
     <RTFastJoinUnAvailable>Вы должны войти на сервер, чтобы использовать это!</RTFastJoinUnAvailable>
-    <RTFastJoin> Присоединиться к {0}:{1} как {2}</RTFastJoin>
+    <RTFastJoin>Присоединиться к {0}:{1} как {2}</RTFastJoin>
     <RTDisconnect>Отключиться</RTDisconnect>
     <RTJoin>Присоединиться</RTJoin>
     <RTCustomScenariosUnAvailable>Этот сервер не поддерживает пользовательские сценарии!</RTCustomScenariosUnAvailable>
@@ -168,8 +170,6 @@
     <RTFactionMemberWait>Ожидание списка участников</RTFactionMemberWait>
     <RTFactionMembers>Участники</RTFactionMembers>
     <RTFactionMemberMenu>Участники фракции</RTFactionMemberMenu>
-    <RTDays>Дней</RTDays>
-    <RTDay>День</RTDay>
     <RTFactionMemberMenuDesc>Все участники фракции находятся здесь</RTFactionMemberMenuDesc>
     <RTFactionDelete>Удалить</RTFactionDelete>
     <RTFactionWaitDelete>Ожидание удаления фракции</RTFactionWaitDelete>
@@ -258,7 +258,7 @@
     <RTSpyMenuDesc>Шпионить за этим поселением</RTSpyMenuDesc>
     <RTSpyingCost>Шпионаж стоит {0} серебра, продолжить?</RTSpyingCost>
     <RTMapWait>Ожидание карты</RTMapWait>
-    <RTMapUnknownModData>Карта получена, но содержит данные с неизвестного мода, продолжить?</RTMapUnknownModData>
+    <RTMapUnknownModData>Карта получена, но содержит неизвестные данные, продолжить?</RTMapUnknownModData>
     
     <RTRaidButton>Напасть на поселение</RTRaidButton>
     <RTRaidButtonDesc>Напасть на это поселение</RTRaidButtonDesc>
@@ -267,7 +267,7 @@
     <RTRaidedBy>Вас атакует {0}, принять?</RTRaidedBy>
     
     <RTVisitSettlementButton>Посетить поселение</RTVisitSettlementButton>
-    <RTVisitSettlementButtonDesc>Посетить </RTVisitSettlementButtonDesc>
+    <RTVisitSettlementButtonDesc>Посетить</RTVisitSettlementButtonDesc>
     <RTVisitSettlementMenu>Режим посещения</RTVisitSettlementMenu>
     <RTVisitSettlementMenuDesc>Выберите режим посещения</RTVisitSettlementMenuDesc>
     
@@ -300,7 +300,7 @@
     <RTPersonalSiteAccessDesc>Откройте ваш персональный цех</RTPersonalSiteAccessDesc>
     <RTSiteBuilt>Ваш цех был построен!</RTSiteBuilt>
     <RTWaitSiteInfo>Ожидание информации о цехе</RTWaitSiteInfo>
-    <RTSiteNoCurrentWorker>Здесь нет рабочего прямо сейчас, Отправить?</RTSiteNoCurrentWorker>
+    <RTSiteNoCurrentWorker>Здесь нет рабочего прямо сейчас, отправить?</RTSiteNoCurrentWorker>
     <RTSiteHasWorker>У вас есть рабочий в этом цеху, вернуть?</RTSiteHasWorker>
     <RTSiteWaitingWorker>Ожидание рабочего цеха</RTSiteWaitingWorker>
     <RTSiteWorkerRecovered>Рабочий был возвращен</RTSiteWorkerRecovered>
