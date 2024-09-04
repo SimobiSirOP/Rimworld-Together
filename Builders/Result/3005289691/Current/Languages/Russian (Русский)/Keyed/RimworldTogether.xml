@@ -203,6 +203,9 @@
     <RTFactionInviteSure>Вы уверены, что хотите пригласить этого игрока?</RTFactionInviteSure>
     <RTFactionInvitedTo>Вы приглашены к {0}, принять?</RTFactionInvitedTo>
     <RTFactionAdminProtection>Вы не можете это делать, как админ фракции!</RTFactionAdminProtection>
+    <RTFactionMember>Участник</RTFactionMember>
+    <RTFactionModerator>Модератор</RTFactionModerator>
+    <RTFactionAdmin>Админ</RTFactionAdmin>
     
     <!-- Aid -->
     
