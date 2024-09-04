@@ -57,7 +57,7 @@
     <RTSitesMenu>Sites</RTSitesMenu>
     <RTPlayerSites>Player Sites: {0}</RTPlayerSites>
 
-    <!-- Connection --> 
+    <!-- Connection -->
     <RTLoginNewUser>New User</RTLoginNewUser>
     <RTLoginExistingUser>Existing User</RTLoginExistingUser>
     <RTLoginUsername>Username</RTLoginUsername>

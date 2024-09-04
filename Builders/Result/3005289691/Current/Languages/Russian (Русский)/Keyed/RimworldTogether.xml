@@ -13,8 +13,15 @@
     <RTMuteChatDesc>Заглушает сообщения чата</RTMuteChatDesc>
     <RTServerSyncInterval>[В Игре] Интервал сохранений на сервер</RTServerSyncInterval>
     <RTServerSyncIntervalVar>{0} Дней</RTServerSyncIntervalVar>
-    <RTDays>Дней</RTDays>
-    <RTDay>День</RTDay>
+    <RTDays0.125>0.125 Дня</RTDays0.125>
+    <RTDays0.25>0.25 Дней</RTDays0.25>
+    <RTDays0.5>0.5 Дня</RTDays0.5>
+    <RTDays1>1 День</RTDays1>
+    <RTDays2>2 Дня</RTDays2>
+    <RTDays3>3 Дня</RTDays3>
+    <RTDays5>5 Дней</RTDays5>
+    <RTDays7>7 Дней</RTDays7>
+    <RTDays14>14 Дней</RTDays14>
     
     <RTCompatibility>Совместимость</RTCompatibility>
     <RTConvertSave>Конвертировать сохранение для использование сервером</RTConvertSave>
@@ -36,14 +43,13 @@
     <RTDiscordOpen>Наш Discord!</RTDiscordOpen>
     
     <!-- Tabs -->
-    
     <RTBasesLabel>Базы</RTBasesLabel>
     <RTBases>Базы игроков: {0}</RTBases>
     <RTFocus>Фокус</RTFocus>
     
     <RTChatOnlinePlayers>{0} Игроков Онлайн</RTChatOnlinePlayers>
     <RTChatOnlinePlayer>{0} Игрок Онлайн</RTChatOnlinePlayer>
-    <RTAutoScroll>Автопрокрутка</RTAutoScroll>
+    <RTAutoScroll>Авто прокрутка</RTAutoScroll>
     
     <RTPlayersMenu>Игроки</RTPlayersMenu>
     <RTOnlinePlayers>Игроков Онлайн: {0}</RTOnlinePlayers>
@@ -51,7 +57,7 @@
     <RTSitesMenu>Цехи</RTSitesMenu>
     <RTPlayerSites>Цехи Игроков: {0}</RTPlayerSites>
 
-    <!-- Connection --> 
+    <!-- Connection -->
     <RTLoginNewUser>Новый пользователь</RTLoginNewUser>
     <RTLoginExistingUser>Существующий пользователь</RTLoginExistingUser>
     <RTLoginUsername>Имя пользователя</RTLoginUsername>
@@ -87,7 +93,7 @@
     <RTDialogClose>Закрыть</RTDialogClose>
     <RTDialogSelect>Выбрать</RTDialogSelect>
     <RTDialogNew>Новый</RTDialogNew>
-    <RTDialogReload>Перезапустить</RTDialogReload>
+    <RTDialogReload>Обновить</RTDialogReload>
     <RTDialogReset>Сбросить</RTDialogReset>
     <RTDialogAccept>Принять</RTDialogAccept>
     <RTPlayerNotAvailable>Пользователь не доступен прямо сейчас!</RTPlayerNotAvailable>
@@ -160,7 +166,6 @@
     <RTDialogWhitelisted>Сервер использует белый список!</RTDialogWhitelisted>
     <RTDialogVersionMismatch>Неверная версия мода! Ожидаемая версия {0}</RTDialogVersionMismatch>
     <RTDialogServerBeingSetup>Сервер прямо сейчас настраивается! Присоединитесь позже!</RTDialogServerBeingSetup>
-    
     <!-- Managers -->
     
     <!-- Factions -->
