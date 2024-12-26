@@ -20,7 +20,7 @@ namespace GameClient
         {
             static RimworldTogether() 
             {
-                ApplyHarmonyPathches();
+                ApplyHarmonyPatches();
                 PrepareCulture();
                 PreparePaths();
                 CreateUnityDispatcher();
@@ -33,7 +33,7 @@ namespace GameClient
             }
         }
 
-        private static void ApplyHarmonyPathches()
+        private static void ApplyHarmonyPatches()
         {
             Harmony harmony = new Harmony(modID);
             harmony.PatchAll(Assembly.GetExecutingAssembly());
