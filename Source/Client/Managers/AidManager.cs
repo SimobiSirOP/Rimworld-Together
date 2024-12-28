@@ -1,10 +1,14 @@
-﻿using RimWorld;
+﻿using GameClient.Dialogs;
+using GameClient.Scribers;
+using GameClient.TCP;
+using GameClient.Values;
+using RimWorld;
 using Shared;
 using System;
 using Verse;
 using static Shared.CommonEnumerators;
 
-namespace GameClient
+namespace GameClient.Managers
 {
     public static class AidManager
     {

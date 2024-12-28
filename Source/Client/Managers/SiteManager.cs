@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GameClient;
+using GameClient.Dialogs;
+using GameClient.Managers;
+using GameClient.Misc;
+using GameClient.TCP;
+using GameClient.Values;
+using GameClient.WorldObjects;
 using RimWorld;
 using RimWorld.Planet;
 using Shared;
@@ -9,7 +14,7 @@ using Verse;
 using static Shared.CommonEnumerators;
 
 
-namespace GameClient
+namespace GameClient.Managers
 {
     public static class SiteManager
     {
@@ -23,7 +28,7 @@ namespace GameClient
         {
             SiteData siteData = Serializer.ConvertBytesToObject<SiteData>(packet.contents);
 
-            switch(siteData._stepMode)
+            switch (siteData._stepMode)
             {
                 case SiteStepMode.Accept:
                     OnSiteAccept();
@@ -113,11 +118,11 @@ namespace GameClient
                         tile: toAdd.Tile,
                         threatPoints: 1000,
                         faction: PlanetManagerHelper.GetPlayerFactionFromGoodwill(toAdd.Goodwill));
-                    
+
                     playerSites.Add(site);
                     Find.WorldObjects.Add(site);
                 }
-                catch (Exception e) { Logger.Error($"Failed to spawn site at {toAdd.Tile}. Reason: {e}"); }
+                catch (Exception e) { Printer.Error($"Failed to spawn site at {toAdd.Tile}. Reason: {e}"); }
             }
         }
 
@@ -131,14 +136,14 @@ namespace GameClient
                     if (playerSites.Contains(toGet)) playerSites.Remove(toGet);
                     Find.WorldObjects.Remove(toGet);
                 }
-                else Logger.Warning($"Ignored removal of site at {toGet.Tile} because player was inside");
+                else Printer.Warning($"Ignored removal of site at {toGet.Tile} because player was inside");
             }
-            catch (Exception e) { Logger.Error($"Failed to remove site at {toRemove.Tile}. Reason: {e}"); }
+            catch (Exception e) { Printer.Error($"Failed to remove site at {toRemove.Tile}. Reason: {e}"); }
         }
 
         public static void RequestSiteBuild(SiteInfoFile configFile)
         {
-            for (int i = 0; i < configFile.DefNameCost.Length; i++) 
+            for (int i = 0; i < configFile.DefNameCost.Length; i++)
             {
                 if (!RimworldManager.CheckIfHasEnoughItemInCaravan(SessionValues.chosenCaravan, configFile.DefNameCost[i], configFile.Cost[i]))
                 {
@@ -149,15 +154,15 @@ namespace GameClient
 
             for (int i = 0; i < configFile.DefNameCost.Length; i++)
             {
-                RimworldManager.RemoveThingFromCaravan(SessionValues.chosenCaravan, 
+                RimworldManager.RemoveThingFromCaravan(SessionValues.chosenCaravan,
                     DefDatabase<ThingDef>.GetNamed(configFile.DefNameCost[i]), configFile.Cost[i]);
-            }    
+            }
 
             SiteData siteData = new SiteData();
             siteData._stepMode = SiteStepMode.Build;
             siteData._siteFile.Tile = SessionValues.chosenCaravan.Tile;
             siteData._siteFile.Type.DefName = configFile.DefName;
-            if (ServerValues.hasFaction) siteData._siteFile.FactionFile = new FactionFile();
+            if (ServerValues.hasFaction) siteData._siteFile.File = new GuildFile();
 
             Packet packet = Packet.CreatePacketFromObject(nameof(SiteManager), siteData);
             Network.listener.EnqueuePacket(packet);
@@ -165,7 +170,7 @@ namespace GameClient
             DialogManager.PushNewDialog(new RT_Dialog_Wait("Waiting for building"));
         }
 
-        public static void RequestSiteChangeConfig(SiteInfoFile config, string reward) 
+        public static void RequestSiteChangeConfig(SiteInfoFile config, string reward)
         {
             SiteRewardConfigData rewardConfig = new SiteRewardConfigData();
             rewardConfig._siteDef = config.DefName;

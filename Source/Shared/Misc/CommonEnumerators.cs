@@ -30,7 +30,7 @@ namespace Shared
 
         public enum ModConfigStepMode { Send, Ask }
 
-        public enum FactionStepMode { Create, Delete, NameInUse, NoPower, AddMember, RemoveMember, AcceptInvite, Promote, Demote, AdminProtection, MemberList }
+        public enum GuildStepMode { Create, Delete, NameInUse, NoPower, AddMember, RemoveMember, AcceptInvite, Promote, Demote, AdminProtection, MemberList }
 
         public enum FactionRanks { Member, Moderator, Admin }
 
@@ -72,11 +72,9 @@ namespace Shared
 
         public enum MessageColor { Normal, Admin, Console, Private, Discord, Server }
 
-        public enum LoginMode { Login, Register }
-
         public enum ModType { Required, Optional, Forbidden };
 
-        public enum LoginResponse { InvalidLogin, BannedLogin, RegisterInUse, RegisterError, ExtraLogin, WrongMods, WrongVersion, ServerFull, Whitelist, NoWorld }
+        public enum LoginResponse { InvalidLogin, BannedLogin, RegisterError, ExtraLogin, WrongMods, WrongVersion, ServerFull, Whitelist, NoWorld }
     }
 }
 

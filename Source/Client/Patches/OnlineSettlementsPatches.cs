@@ -1,11 +1,13 @@
-﻿using HarmonyLib;
+﻿using GameClient.TCP;
+using GameClient.Values;
+using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
 using System;
 using Verse;
 using static Shared.CommonEnumerators;
 
-namespace GameClient
+namespace GameClient.Patches
 {
     [HarmonyPatch(typeof(SettlementDefeatUtility), nameof(SettlementDefeatUtility.CheckDefeated))]
     public static class PatchSettlementJoin

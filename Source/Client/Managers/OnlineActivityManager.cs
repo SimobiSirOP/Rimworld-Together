@@ -8,8 +8,14 @@ using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Verse.AI;
+using GameClient.Core;
+using GameClient.Misc;
+using GameClient.Scribers;
+using GameClient.Values;
+using GameClient.Dialogs;
+using GameClient.TCP;
 
-namespace GameClient
+namespace GameClient.Managers
 {
     public static class OnlineActivityManager
     {
@@ -27,7 +33,7 @@ namespace GameClient
         {
             OnlineActivityData data = Serializer.ConvertBytesToObject<OnlineActivityData>(packet.contents);
 
-            Logger.Warning(data._stepMode.ToString(), LogImportanceMode.Extreme);
+            Printer.Warning(data._stepMode.ToString(), LogImportanceMode.Extreme);
 
             switch (data._stepMode)
             {
@@ -130,7 +136,7 @@ namespace GameClient
                 OnlineActivityManagerHelper.JoinActivityMap(data._activityType);
 
                 data._mapFile = null;
-                data._stepMode = OnlineActivityStepMode.Ready;            
+                data._stepMode = OnlineActivityStepMode.Ready;
 
                 Packet packet = Packet.CreatePacketFromObject(nameof(OnlineActivityManager), data);
                 Network.listener.EnqueuePacket(packet);
@@ -140,7 +146,7 @@ namespace GameClient
             Threader.GenerateThread(Threader.Mode.Activity);
 
             DialogManager.PopWaitDialog();
-            Logger.Warning($"Started online activity of type > {SessionValues.currentRealTimeActivity}", LogImportanceMode.Verbose);
+            Printer.Warning($"Started online activity of type > {SessionValues.currentRealTimeActivity}", LogImportanceMode.Verbose);
         }
 
         private static void OnActivityReject()
@@ -172,8 +178,8 @@ namespace GameClient
             {
                 RimworldManager.SetGameTicks(gameTicksBeforeActivity);
 
-                CaravanExitMapUtility.ExitMapAndCreateCaravan(factionPawns, 
-                    Faction.OfPlayer, activityMap.Tile, Direction8Way.North, 
+                CaravanExitMapUtility.ExitMapAndCreateCaravan(factionPawns,
+                    Faction.OfPlayer, activityMap.Tile, Direction8Way.North,
                     activityMap.Tile);
             }
 
@@ -239,8 +245,8 @@ namespace GameClient
             OnlineActivityQueues.SetThingQueue(null);
         }
 
-        public static void AddThingToMap(Thing toAdd) 
-        { 
+        public static void AddThingToMap(Thing toAdd)
+        {
             OnlineActivityManager.activityMapThings.Add(toAdd);
             OnlineActivityQueues.SetThingQueue(null);
         }
@@ -370,7 +376,7 @@ namespace GameClient
                     if (target.Thing == null) targetInfoList.Add(ValueParser.Vector3ToString(target.Cell));
                     else targetInfoList.Add(target.Thing.ThingID);
                 }
-                catch { Logger.Error($"failed to parse {target}"); }
+                catch { Printer.Error($"failed to parse {target}"); }
             }
 
             return targetInfoList.ToArray();
@@ -397,7 +403,7 @@ namespace GameClient
                         else targetTypeList.Add(ActionTargetType.Thing);
                     }
                 }
-                catch { Logger.Error($"failed to parse {target}"); }
+                catch { Printer.Error($"failed to parse {target}"); }
             }
 
             return targetTypeList.ToArray();
@@ -425,7 +431,7 @@ namespace GameClient
                         else if (OnlineActivityManager.activityMapThings.Contains(target.Thing)) targetFactions.Add(OnlineActivityTargetFaction.None);
                     }
                 }
-                catch { Logger.Error($"failed to parse {target}"); }
+                catch { Printer.Error($"failed to parse {target}"); }
             }
 
             return targetFactions.ToArray();
@@ -453,7 +459,7 @@ namespace GameClient
                 if (isDrafted) pawn.drafter.Drafted = true;
                 else { pawn.drafter.Drafted = false; }
             }
-            catch (Exception e) { Logger.Warning($"Couldn't apply pawn draft state for {pawn.Label}. Reason: {e}"); }
+            catch (Exception e) { Printer.Warning($"Couldn't apply pawn draft state for {pawn.Label}. Reason: {e}"); }
         }
 
         public static LocalTargetInfo SetActionTargetsFromString(PawnJobData pawnOrder, int index)
@@ -466,18 +472,18 @@ namespace GameClient
                         return new LocalTargetInfo(OnlineActivityManagerHelper.GetThingFromID(pawnOrder._targetComponent.targets[index]));
 
                     case ActionTargetType.Human:
-                        return new LocalTargetInfo(OnlineActivityManagerHelper.GetPawnFromID(pawnOrder._targetComponent.targets[index], 
+                        return new LocalTargetInfo(OnlineActivityManagerHelper.GetPawnFromID(pawnOrder._targetComponent.targets[index],
                             pawnOrder._targetComponent.targetFactions[index]));
 
                     case ActionTargetType.Animal:
-                        return new LocalTargetInfo(OnlineActivityManagerHelper.GetPawnFromID(pawnOrder._targetComponent.targets[index], 
+                        return new LocalTargetInfo(OnlineActivityManagerHelper.GetPawnFromID(pawnOrder._targetComponent.targets[index],
                             pawnOrder._targetComponent.targetFactions[index]));
 
                     case ActionTargetType.Cell:
                         return new LocalTargetInfo(ValueParser.StringToVector3(pawnOrder._targetComponent.targets[index]));
                 }
             }
-            catch (Exception e) { Logger.Error(e.ToString()); }
+            catch (Exception e) { Printer.Error(e.ToString()); }
 
             throw new IndexOutOfRangeException();
         }
@@ -518,7 +524,7 @@ namespace GameClient
         {
             if (SessionValues.currentRealTimeActivity == OnlineActivityType.None) return false;
             else if (!SessionValues.isActivityReady) return false;
-            else return true; 
+            else return true;
         }
 
         public static CreationOrderData CreateCreationOrder(Thing thing)
@@ -545,7 +551,7 @@ namespace GameClient
         {
             DestructionOrderData destructionOrder = new DestructionOrderData();
             destructionOrder._thingHash = thing.ThingID;
-            
+
             return destructionOrder;
         }
 
@@ -597,7 +603,7 @@ namespace GameClient
 
         public static GameConditionOrderData CreateGameConditionOrder(GameCondition gameCondition, OnlineActivityApplyMode applyMode)
         {
-            GameConditionOrderData gameConditionOrder = new GameConditionOrderData();            
+            GameConditionOrderData gameConditionOrder = new GameConditionOrderData();
             gameConditionOrder._conditionDefName = gameCondition.def.defName;
             gameConditionOrder._duration = gameCondition.Duration;
             gameConditionOrder._applyMode = applyMode;
@@ -644,7 +650,7 @@ namespace GameClient
         {
             Thing toCreate = null;
 
-            switch(data._creationType)
+            switch (data._creationType)
             {
                 case CreationType.Human:
                     HumanFile humanData = Serializer.ConvertBytesToObject<HumanFile>(data._dataToCreate, false);
@@ -707,9 +713,9 @@ namespace GameClient
                 {
                     OnlineActivityQueues.SetThingQueue(toApplyTo);
                     toApplyTo.TakeDamage(damageInfo);
-                }   
+                }
             }
-            catch (Exception e) { Logger.Warning($"Couldn't apply damage order. Reason: {e}"); }
+            catch (Exception e) { Printer.Warning($"Couldn't apply damage order. Reason: {e}"); }
         }
 
         public static void ReceiveHediffOrder(HediffOrderData data)
@@ -732,7 +738,7 @@ namespace GameClient
                     {
                         HediffDef hediffDef = DefDatabase<HediffDef>.AllDefs.First(fetch => fetch.defName == data._hediffComponent.DefName);
                         Hediff toMake = HediffMaker.MakeHediff(hediffDef, toTarget, bodyPartRecord);
-                        
+
                         if (data._hediffComponent.WeaponDefName != null)
                         {
                             ThingDef source = DefDatabase<ThingDef>.AllDefs.First(fetch => fetch.defName == data._hediffComponent.WeaponDefName);
@@ -763,7 +769,7 @@ namespace GameClient
                     }
                 }
             }
-            catch (Exception e) { Logger.Warning($"Couldn't apply hediff order. Reason: {e}"); }
+            catch (Exception e) { Printer.Warning($"Couldn't apply hediff order. Reason: {e}"); }
         }
 
         public static void ReceiveGameConditionOrder(GameConditionOrderData data)
@@ -789,7 +795,7 @@ namespace GameClient
                     gameCondition.End();
                 }
             }
-            catch (Exception e) { Logger.Warning($"Couldn't apply game condition order. Reason: {e}"); }
+            catch (Exception e) { Printer.Warning($"Couldn't apply game condition order. Reason: {e}"); }
         }
 
         public static void ReceiveWeatherOrder(WeatherOrderData data)
@@ -801,7 +807,7 @@ namespace GameClient
                 OnlineActivityQueues.SetWeatherQueue(weatherDef);
                 OnlineActivityManager.activityMap.weatherManager.TransitionTo(weatherDef);
             }
-            catch (Exception e) { Logger.Warning($"Couldn't apply weather order. Reason: {e}"); }
+            catch (Exception e) { Printer.Warning($"Couldn't apply weather order. Reason: {e}"); }
         }
 
         public static void ReceiveTimeSpeedOrder(TimeSpeedOrderData data)
@@ -811,7 +817,7 @@ namespace GameClient
                 OnlineActivityQueues.SetTimeSpeedQueue(data._targetTimeSpeed);
                 RimworldManager.SetGameTicks(data._targetMapTicks);
             }
-            catch (Exception e) { Logger.Warning($"Couldn't apply time speed order. Reason: {e}"); }
+            catch (Exception e) { Printer.Warning($"Couldn't apply time speed order. Reason: {e}"); }
         }
 
         public static void ReceiveJobOrder(PawnJobData data)
@@ -851,7 +857,7 @@ namespace GameClient
                     OnlineActivityJobs.SetPawnDraftState(pawn, data._isDrafted);
                 }
             }
-            catch (Exception e) { Logger.Warning($"Couldn't apply job order. Reason: {e}"); }
+            catch (Exception e) { Printer.Warning($"Couldn't apply job order. Reason: {e}"); }
         }
 
         public static void ReceiveBufferOrder(OnlineActivityData data)
@@ -907,7 +913,7 @@ namespace GameClient
             while (SessionValues.currentRealTimeActivity != OnlineActivityType.None)
             {
                 try { Master.threadDispatcher.Enqueue(SendBufferData); }
-                catch (Exception e) { Logger.Error($"Activity clock tick failed, this should never happen. Exception > {e}"); }
+                catch (Exception e) { Printer.Error($"Activity clock tick failed, this should never happen. Exception > {e}"); }
 
                 await Task.Delay(TimeSpan.FromMilliseconds(SessionValues.actionValues.OnlineActivityTickMS));
             }

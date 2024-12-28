@@ -1,7 +1,7 @@
-﻿using System.IO;
+﻿using GameClient.Managers;
 using Verse;
 
-namespace GameClient
+namespace GameClient.Values
 {
     public static class ClientValues
     {
@@ -11,8 +11,6 @@ namespace GameClient
 
         public static bool isSavingGame;
 
-        public static bool isQuickConnecting;
-
         public static bool isSendingSaveToServer;
 
         public static bool isInTransfer;
@@ -20,6 +18,8 @@ namespace GameClient
         public static bool isUsingScriber;
 
         public static string username;
+
+        public static string uid;
 
         //ModStuff values go below. Do not change manually
 
@@ -48,11 +48,11 @@ namespace GameClient
         }
 
         public static void ToggleGenerateWorld(bool mode) { isGeneratingFreshWorld = mode; }
-    
-        public static void SetIntentionalDisconnect(bool mode, DisconnectionManager.DCReason reason = DisconnectionManager.DCReason.None) 
-        { 
+
+        public static void SetIntentionalDisconnect(bool mode, DisconnectionManager.DCReason reason = DisconnectionManager.DCReason.None)
+        {
             DisconnectionManager.isIntentionalDisconnect = mode;
-            DisconnectionManager.intentionalDisconnectReason = reason; 
+            DisconnectionManager.intentionalDisconnectReason = reason;
         }
 
         public static void ToggleReadyToPlay(bool mode) { isReadyToPlay = mode; }
@@ -62,8 +62,6 @@ namespace GameClient
         public static void ToggleChatScroll(bool mode) { ChatManager.shouldScrollChat = mode; }
 
         public static void ToggleSavingGame(bool mode) { isSavingGame = mode; }
-
-        public static void ToggleQuickConnecting(bool mode) { isQuickConnecting = mode; }
 
         public static void ToggleSendingSaveToServer(bool mode) { isSendingSaveToServer = mode; }
 
@@ -76,7 +74,6 @@ namespace GameClient
             ToggleReadyToPlay(false);
             ToggleTransfer(false);
             ToggleSavingGame(false);
-            ToggleQuickConnecting(false);
             ToggleSendingSaveToServer(false);
             ToggleUsingScriber(false);
         }

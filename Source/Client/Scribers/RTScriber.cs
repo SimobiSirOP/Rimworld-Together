@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Xml;
+using GameClient.Managers;
+using GameClient.Misc;
+using GameClient.Values;
 using RimWorld;
 using Shared;
 using Verse;
 using static Shared.CommonEnumerators;
 
-namespace GameClient
+namespace GameClient.Scribers
 {
     public static class RTScriber
     {
@@ -31,12 +32,12 @@ namespace GameClient
                 Scribe.saver.InitSaving("", scribeTreeName);
 
                 Scribe_Deep.Look(ref toSave, scribeNodeName);
-                
+
                 Scribe.saver.FinalizeSaving();
 
                 if (customCount != -1) toSave.stackCount = originalCount;
             }
-            catch (Exception e) { Logger.Error(e.ToString(), LogImportanceMode.Verbose); };
+            catch (Exception e) { Printer.Error(e.ToString(), LogImportanceMode.Verbose); };
 
             ClientValues.ToggleUsingScriber(false);
 
@@ -59,7 +60,7 @@ namespace GameClient
 
                 if (!hasCustomID) toLoad.thingIDNumber = Find.UniqueIDsManager.GetNextThingID();
             }
-            catch (Exception e) { Logger.Error(e.ToString(), LogImportanceMode.Verbose); };
+            catch (Exception e) { Printer.Error(e.ToString(), LogImportanceMode.Verbose); };
 
             ClientValues.ToggleUsingScriber(false);
 
@@ -177,18 +178,18 @@ namespace GameClient
         private static void GetMapTile(MapFile mapFile, Map map)
         {
             try { mapFile.Tile = map.Tile; }
-            catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+            catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
         }
 
         private static void GetMapSize(MapFile mapFile, Map map)
         {
             try { mapFile.Size = ValueParser.IntVec3ToArray(map.Size); }
-            catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+            catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
         }
 
         private static void GetMapTerrain(MapFile mapFile, Map map)
         {
-            try 
+            try
             {
                 List<TileComponent> toGet = new List<TileComponent>();
 
@@ -210,12 +211,12 @@ namespace GameClient
 
                 mapFile.Tiles = toGet.ToArray();
             }
-            catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+            catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
         }
 
         private static void GetMapThings(MapFile mapFile, Map map, bool factionThings, bool nonFactionThings)
         {
-            try 
+            try
             {
                 List<ThingFile> tempFactionThings = new List<ThingFile>();
                 List<ThingFile> tempNonFactionThings = new List<ThingFile>();
@@ -234,12 +235,12 @@ namespace GameClient
                 mapFile.FactionThings = tempFactionThings.ToArray();
                 mapFile.NonFactionThings = tempNonFactionThings.ToArray();
             }
-            catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+            catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
         }
 
         private static void GetMapHumans(MapFile mapFile, Map map, bool factionHumans, bool nonFactionHumans)
         {
-            try 
+            try
             {
                 List<HumanFile> tempFactionHumans = new List<HumanFile>();
                 List<HumanFile> tempNonFactionHumans = new List<HumanFile>();
@@ -258,12 +259,12 @@ namespace GameClient
                 mapFile.FactionHumans = tempFactionHumans.ToArray();
                 mapFile.NonFactionHumans = tempNonFactionHumans.ToArray();
             }
-            catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+            catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
         }
 
         private static void GetMapAnimals(MapFile mapFile, Map map, bool factionAnimals, bool nonFactionAnimals)
         {
-            try 
+            try
             {
                 List<AnimalFile> tempFactionAnimals = new List<AnimalFile>();
                 List<AnimalFile> tempNonFactionAnimals = new List<AnimalFile>();
@@ -282,19 +283,19 @@ namespace GameClient
                 mapFile.FactionAnimals = tempFactionAnimals.ToArray();
                 mapFile.NonFactionAnimals = tempNonFactionAnimals.ToArray();
             }
-            catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+            catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
         }
 
         private static void GetMapWeather(MapFile mapFile, Map map)
         {
             try { mapFile.CurWeatherDefName = map.weatherManager.curWeather.defName; }
-            catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+            catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
         }
 
         private static void GetMapMods(MapFile mapFile)
         {
             try { mapFile.Mods = ModManagerHelper.GetRunningModList(); }
-            catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+            catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
         }
 
         //Setters
@@ -313,7 +314,7 @@ namespace GameClient
 
                 return toReturn;
             }
-            catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+            catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
 
             return toReturn;
         }
@@ -337,20 +338,20 @@ namespace GameClient
                             map.terrainGrid.SetTerrain(vectorToCheck, terrainToUse);
                             map.pollutionGrid.SetPolluted(vectorToCheck, component.IsPolluted);
                         }
-                        catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+                        catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
 
                         try
                         {
                             RoofDef roofToUse = DefDatabase<RoofDef>.AllDefs.FirstOrDefault(fetch => fetch.defName == component.RoofDefName);
                             map.roofGrid.SetRoof(vectorToCheck, roofToUse);
                         }
-                        catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+                        catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
 
                         index++;
                     }
                 }
             }
-            catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+            catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
         }
 
         private static void SetMapThings(MapFile mapFile, Map map, bool factionThings, bool nonFactionThings, bool lessLoot, bool overrideID)
@@ -376,7 +377,7 @@ namespace GameClient
                             }
                             else thingsToGetInThisTile.Add(toGet);
                         }
-                        catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+                        catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
                     }
                 }
 
@@ -389,21 +390,21 @@ namespace GameClient
                             Thing toGet = ThingScriber.StringToThing(item, overrideID);
                             thingsToGetInThisTile.Add(toGet);
                         }
-                        catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+                        catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
                     }
                 }
 
                 foreach (Thing thing in thingsToGetInThisTile)
                 {
-                    try 
+                    try
                     {
                         if (thing.def.CanHaveFaction) thing.SetFaction(FactionValues.neutralPlayer);
-                        GenPlace.TryPlaceThing(thing, thing.Position, map, ThingPlaceMode.Direct, rot: thing.Rotation); 
+                        GenPlace.TryPlaceThing(thing, thing.Position, map, ThingPlaceMode.Direct, rot: thing.Rotation);
                     }
-                    catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+                    catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
                 }
             }
-            catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+            catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
         }
 
         private static void SetMapHumans(MapFile mapFile, Map map, bool factionHumans, bool nonFactionHumans, bool overrideID)
@@ -421,7 +422,7 @@ namespace GameClient
 
                             GenSpawn.Spawn(human, human.Position, map, human.Rotation);
                         }
-                        catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+                        catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
                     }
                 }
 
@@ -434,11 +435,11 @@ namespace GameClient
                             Pawn human = HumanScriber.StringtoHuman(pawn, overrideID);
                             GenSpawn.Spawn(human, human.Position, map, human.Rotation);
                         }
-                        catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+                        catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
                     }
                 }
             }
-            catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+            catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
         }
 
         private static void SetMapAnimals(MapFile mapFile, Map map, bool factionAnimals, bool nonFactionAnimals, bool overrideID)
@@ -456,7 +457,7 @@ namespace GameClient
 
                             GenSpawn.Spawn(animal, animal.Position, map, animal.Rotation);
                         }
-                        catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+                        catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
                     }
                 }
 
@@ -469,11 +470,11 @@ namespace GameClient
                             Pawn animal = AnimalScriber.StringToAnimal(pawn, overrideID);
                             GenSpawn.Spawn(animal, animal.Position, map, animal.Rotation);
                         }
-                        catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+                        catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
                     }
                 }
             }
-            catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+            catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
         }
 
         private static void SetWeatherData(MapFile mapFile, Map map)
@@ -483,13 +484,13 @@ namespace GameClient
                 WeatherDef weatherDef = DefDatabase<WeatherDef>.AllDefs.First(fetch => fetch.defName == mapFile.CurWeatherDefName);
                 map.weatherManager.TransitionTo(weatherDef);
             }
-            catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+            catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
         }
 
         private static void SetMapFog(Map map)
         {
             try { FloodFillerFog.FloodUnfog(MapGenerator.PlayerStartSpot, map); }
-            catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }
+            catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
         }
 
         private static void SetMapRoofs(Map map)
@@ -499,7 +500,7 @@ namespace GameClient
                 map.roofCollapseBuffer.Clear();
                 map.roofGrid.Drawer.SetDirty();
             }
-            catch (Exception e) { Logger.Warning(e.ToString(), LogImportanceMode.Verbose); }         
+            catch (Exception e) { Printer.Warning(e.ToString(), LogImportanceMode.Verbose); }
         }
     }
 

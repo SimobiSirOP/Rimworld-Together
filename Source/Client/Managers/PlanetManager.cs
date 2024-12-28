@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using GameClient.Values;
 using RimWorld;
 using Verse;
 using static Shared.CommonEnumerators;
 
-namespace GameClient
+namespace GameClient.Managers
 {
     //Class that handles all the planet functions for the mod
 
@@ -94,7 +95,7 @@ namespace GameClient
                 }
             }
 
-            if(factions.Count >= 1) return factions;
+            if (factions.Count >= 1) return factions;
             else
             {
                 switch (defName) // If missing factions from missing dlcs.
@@ -126,7 +127,7 @@ namespace GameClient
                     case "Empire":
                         factions.AddRange(GetNPCFactionFromDefName(FactionDefOf.OutlanderCivil.defName));
                         break;
-                        
+
                     default:
                         break;
                 }

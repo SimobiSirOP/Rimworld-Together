@@ -1,12 +1,14 @@
-﻿using Shared;
+﻿using GameClient.Core;
+using GameClient.Misc;
+using Shared;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Verse;
-namespace GameClient
+namespace GameClient.Managers
 {
-    public static class CompatibilityManager 
+    public static class CompatibilityManager
     {
         public static void LoadAllPatchedAssemblies()
         {
@@ -14,14 +16,14 @@ namespace GameClient
             foreach (string compatibility in CompatibilityManagerHelper.GetAllPatchedMods())
             {
                 Assembly toAdd = LoadCustomAssembly(compatibility);
-                if (toAdd != null) toLoad.Add(toAdd);    
+                if (toAdd != null) toLoad.Add(toAdd);
             }
-            
+
             if (toLoad.Count > 0)
             {
                 Master.loadedCompatibilityPatches = toLoad.ToArray();
-                Logger.Warning($"Loaded > {Master.loadedCompatibilityPatches.Length} patches");
-                Logger.Warning($"CAUTION > Custom patches aren't created by the mod developers, always use them with care");
+                Printer.Warning($"Loaded > {Master.loadedCompatibilityPatches.Length} patches");
+                Printer.Warning($"CAUTION > Custom patches aren't created by the mod developers, always use them with care");
             }
         }
 
@@ -45,13 +47,13 @@ namespace GameClient
                                 System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
                                 return assembly;
                             }
-                            else Logger.Error($"Mod {MethodManager.GetAssemblyName(assembly)} has class {type.Name} with attribute 'RTStartup' but no constructor.");
+                            else Printer.Error($"Mod {MethodManager.GetAssemblyName(assembly)} has class {type.Name} with attribute 'RTStartup' but no constructor.");
                         }
-                        else Logger.Error($"Mod {MethodManager.GetAssemblyName(assembly)} has class {type.Name} with attribute 'RTStartup' but isn't static.");
-                    } 
+                        else Printer.Error($"Mod {MethodManager.GetAssemblyName(assembly)} has class {type.Name} with attribute 'RTStartup' but isn't static.");
+                    }
                 }
             }
-            catch (Exception e) { Logger.Error($"Failed to load patch '{assemblyPath}'. {e}"); }
+            catch (Exception e) { Printer.Error($"Failed to load patch '{assemblyPath}'. {e}"); }
 
             return null;
         }
@@ -71,7 +73,7 @@ namespace GameClient
                     results.AddRange(Directory.GetFiles(Path.Combine(mod.RootDir, PatchFolderName)));
                 }
             }
-            
+
             return results.ToArray();
         }
     }

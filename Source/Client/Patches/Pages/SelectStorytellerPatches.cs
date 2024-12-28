@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GameClient.Dialogs;
+using GameClient.Managers;
+using GameClient.TCP;
+using GameClient.Values;
 using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
 using static Shared.CommonEnumerators;
 
-namespace GameClient
+namespace GameClient.Patches.Pages
 {
     [HarmonyPatch(typeof(Page_SelectStoryteller), "PreOpen")]
     public static class PatchDifficultyOverride
@@ -89,7 +93,7 @@ namespace GameClient
                 Vector2 buttonSize = new Vector2(150f, 38f);
                 Vector2 buttonLocation = new Vector2(rect.xMax - buttonSize.x, rect.yMax - buttonSize.y);
                 if (Widgets.ButtonText(new Rect(buttonLocation.x, buttonLocation.y, buttonSize.x, buttonSize.y), "Send Difficulty")) { }
-            }          
+            }
         }
     }
 
@@ -99,11 +103,11 @@ namespace GameClient
     {
         private static readonly Texture2D StorytellerHighlightTex = ContentFinder<Texture2D>.Get("UI/HeroArt/Storytellers/Highlight");
 
-        private static Vector2 scrollPosition = default(Vector2);
+        private static Vector2 scrollPosition = default;
 
-        private static Vector2 explanationScrollPosition = default(Vector2);
+        private static Vector2 explanationScrollPosition = default;
 
-        private static Rect explanationInnerRect = default(Rect);
+        private static Rect explanationInnerRect = default;
 
         private static AnimationCurve explanationScrollPositionAnimated;
 
@@ -126,12 +130,12 @@ namespace GameClient
         {
             if (Network.state == ClientNetworkState.Disconnected) return true;
             if (Current.ProgramState != ProgramState.Entry) return true;
-            
+
             Widgets.BeginGroup(rect);
             Rect outRect = new Rect(0f, 0f, Storyteller.PortraitSizeTiny.x + 16f, rect.height);
-            Widgets.BeginScrollView(viewRect: new Rect(0f, 0f, Storyteller.PortraitSizeTiny.x, (float)DefDatabase<StorytellerDef>.AllDefs.Count() * (Storyteller.PortraitSizeTiny.y + 10f)), outRect: outRect, scrollPosition: ref scrollPosition);
+            Widgets.BeginScrollView(viewRect: new Rect(0f, 0f, Storyteller.PortraitSizeTiny.x, DefDatabase<StorytellerDef>.AllDefs.Count() * (Storyteller.PortraitSizeTiny.y + 10f)), outRect: outRect, scrollPosition: ref scrollPosition);
             Rect rect2 = new Rect(0f, 0f, Storyteller.PortraitSizeTiny.x, Storyteller.PortraitSizeTiny.y).ContractedBy(4f);
-            foreach (StorytellerDef item in DefDatabase<StorytellerDef>.AllDefs.OrderBy((StorytellerDef tel) => tel.listOrder))
+            foreach (StorytellerDef item in DefDatabase<StorytellerDef>.AllDefs.OrderBy((tel) => tel.listOrder))
             {
                 if (item.listVisible)
                 {
@@ -373,7 +377,7 @@ namespace GameClient
 
         private static void DrawCustomDifficultySlider(Listing_Standard listing, string optionName, ref float value, ToStringStyle style, ToStringNumberSense numberSense, float min, float max, float precision = 0.01f, bool reciprocate = false, float reciprocalCutoff = 1000f)
         {
-            string text = (reciprocate ? "_Inverted" : "");
+            string text = reciprocate ? "_Inverted" : "";
             string text2 = optionName.CapitalizeFirst();
             string key = "Difficulty_" + text2 + text + "_Label";
             string key2 = "Difficulty_" + text2 + text + "_Info";
@@ -398,13 +402,13 @@ namespace GameClient
 
         private static void DrawCustomDifficultyCheckbox(Listing_Standard listing, string optionName, ref bool value, bool invert = false, bool showTooltip = true)
         {
-            string text = (invert ? "_Inverted" : "");
+            string text = invert ? "_Inverted" : "";
             string text2 = optionName.CapitalizeFirst();
             string key = "Difficulty_" + text2 + text + "_Label";
             string key2 = "Difficulty_" + text2 + text + "_Info";
-            bool checkOn = (invert ? (!value) : value);
-            listing.CheckboxLabeled(key.Translate(), ref checkOn, showTooltip ? key2.Translate() : ((TaggedString)null));
-            value = (invert ? (!checkOn) : checkOn);
+            bool checkOn = invert ? !value : value;
+            listing.CheckboxLabeled(key.Translate(), ref checkOn, showTooltip ? key2.Translate() : (TaggedString)null);
+            value = invert ? !checkOn : checkOn;
         }
 
         private static void DrawDisabledCustomDifficultySetting(Listing_Standard listing, string optionName, TaggedString disableReason)

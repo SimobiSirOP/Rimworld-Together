@@ -8,13 +8,13 @@ namespace Shared
     {
         public int Tile;
 
-        public string Owner;
+        public string UID;
 
         public Goodwill Goodwill;
 
         public SiteInfoFile Type = new SiteInfoFile();
 
-        public FactionFile FactionFile;
+        public GuildFile File;
 
         [NonSerialized] public Semaphore SavingSemaphore = new Semaphore(1, 1);
     }

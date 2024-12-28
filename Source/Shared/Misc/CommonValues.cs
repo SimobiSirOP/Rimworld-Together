@@ -6,10 +6,6 @@ namespace Shared
 
         public static readonly string defaultParserMethodName = "ParsePacket";
 
-        public static readonly string[] ignoredLogPackets =
-        {
-            "OnlineActivityManager",
-            "KeepAliveManager"
-        };
+        public static readonly string[] ignoredLogPackets = { "OnlineActivityManager", "KeepAliveManager" };
     }
 }

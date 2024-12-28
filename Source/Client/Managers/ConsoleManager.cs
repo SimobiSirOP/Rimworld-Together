@@ -1,8 +1,10 @@
-﻿using RimWorld;
+﻿using GameClient.Dialogs;
+using GameClient.Values;
+using RimWorld;
 using Shared;
 using static Shared.CommonEnumerators;
 
-namespace GameClient
+namespace GameClient.Managers
 {
     //Class that handles how the client will answer to incoming server commands
 
@@ -14,7 +16,7 @@ namespace GameClient
         {
             CommandData commandData = Serializer.ConvertBytesToObject<CommandData>(packet.contents);
 
-            switch(commandData._commandMode)
+            switch (commandData._commandMode)
             {
                 case CommandMode.Op:
                     OnOpCommand();

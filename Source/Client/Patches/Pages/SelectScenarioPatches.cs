@@ -1,4 +1,8 @@
 ﻿using System.Collections.Generic;
+using GameClient.Dialogs;
+using GameClient.Managers;
+using GameClient.TCP;
+using GameClient.Values;
 using HarmonyLib;
 using RimWorld;
 using UnityEngine;
@@ -6,7 +10,7 @@ using Verse;
 using Verse.Sound;
 using static Shared.CommonEnumerators;
 
-namespace GameClient
+namespace GameClient.Patches.Pages
 {
     [HarmonyPatch(typeof(Page_SelectScenario), "DoWindowContents")]
     public static class PatchSelectScenarioPage

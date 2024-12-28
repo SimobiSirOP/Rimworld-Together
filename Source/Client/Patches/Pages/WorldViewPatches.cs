@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using GameClient.Managers;
+using GameClient.TCP;
 using System.Reflection.Emit;
 using HarmonyLib;
 using RimWorld;
@@ -10,7 +11,7 @@ using UnityEngine;
 using Verse;
 using static Shared.CommonEnumerators;
 
-namespace GameClient
+namespace GameClient.Patches.Pages
 {
     [HarmonyPatch(typeof(WorldInspectPane), "SetInitialSizeAndPosition")]
     public static class AddSideTabs
@@ -86,14 +87,23 @@ namespace GameClient
                     {
                         SessionValues.chosenSettlement = __instance;
 
-                        Action r1 = delegate { GoodwillManager.TryRequestGoodwill(Goodwill.Enemy,
-                            GoodwillTarget.Settlement); };
+                        Action r1 = delegate
+                        {
+                            GoodwillManager.TryRequestGoodwill(Goodwill.Enemy,
+                            GoodwillTarget.Settlement);
+                        };
 
-                        Action r2 = delegate { GoodwillManager.TryRequestGoodwill(Goodwill.Neutral,
-                            GoodwillTarget.Settlement); };
+                        Action r2 = delegate
+                        {
+                            GoodwillManager.TryRequestGoodwill(Goodwill.Neutral,
+                            GoodwillTarget.Settlement);
+                        };
 
-                        Action r3 = delegate { GoodwillManager.TryRequestGoodwill(Goodwill.Ally,
-                            GoodwillTarget.Settlement); };
+                        Action r3 = delegate
+                        {
+                            GoodwillManager.TryRequestGoodwill(Goodwill.Ally,
+                            GoodwillTarget.Settlement);
+                        };
 
                         RT_Dialog_3Button d1 = new RT_Dialog_3Button("Change Goodwill", "Set settlement's goodwill to",
                             "Enemy", "Neutral", "Ally", r1, r2, r3, null);
@@ -113,8 +123,8 @@ namespace GameClient
 
                         if (SessionValues.actionValues.EnableFactions)
                         {
-                            if (SessionValues.chosenSettlement.Faction == FactionValues.yourOnlineFaction) FactionManager.OnFactionOpenOnMember();
-                            else FactionManager.OnFactionOpenOnNonMember();
+                            if (SessionValues.chosenSettlement.Faction == FactionValues.yourOnlineFaction) GuildManager.OnFactionOpenOnMember();
+                            else GuildManager.OnFactionOpenOnNonMember();
                         }
                         else DialogManager.PushNewDialog(new RT_Dialog_Error("This feature has been disabled in this server!"));
                     }
@@ -129,7 +139,7 @@ namespace GameClient
                     {
                         SessionValues.chosenSettlement = __instance;
 
-                        Dialog_FormCaravan d1 = new Dialog_FormCaravan(__instance.Map, mapAboutToBeRemoved:true);
+                        Dialog_FormCaravan d1 = new Dialog_FormCaravan(__instance.Map, mapAboutToBeRemoved: true);
                         DialogManager.PushNewDialog(d1);
                     }
                 };
@@ -147,7 +157,7 @@ namespace GameClient
                         {
                             List<string> pawnNames = new List<string>();
                             foreach (Pawn pawn in RimworldManager.GetAllSettlementsPawns(Faction.OfPlayer, false)) pawnNames.Add(pawn.LabelCapNoCount);
-                            DialogManager.PushNewDialog(new RT_Dialog_ListingWithButton("Aid menu", "Select the pawn you want to send for aid", 
+                            DialogManager.PushNewDialog(new RT_Dialog_ListingWithButton("Aid menu", "Select the pawn you want to send for aid",
                                 pawnNames.ToArray(), AidManager.SendAidRequest));
                         }
                         else DialogManager.PushNewDialog(new RT_Dialog_Error("This feature has been disabled in this server!"));
@@ -191,8 +201,8 @@ namespace GameClient
 
                         if (SessionValues.actionValues.EnableFactions)
                         {
-                            if (ServerValues.hasFaction) FactionManager.OnFactionOpen();
-                            else FactionManager.OnNoFactionOpen();
+                            if (ServerValues.hasFaction) GuildManager.OnFactionOpen();
+                            else GuildManager.OnNoFactionOpen();
                         }
                         else DialogManager.PushNewDialog(new RT_Dialog_Error("This feature has been disabled in this server!"));
                     }
@@ -369,14 +379,23 @@ namespace GameClient
                     {
                         SessionValues.chosenSite = __instance;
 
-                        Action r1 = delegate { GoodwillManager.TryRequestGoodwill(Goodwill.Enemy,
-                            GoodwillTarget.Site); };
+                        Action r1 = delegate
+                        {
+                            GoodwillManager.TryRequestGoodwill(Goodwill.Enemy,
+                            GoodwillTarget.Site);
+                        };
 
-                        Action r2 = delegate { GoodwillManager.TryRequestGoodwill(Goodwill.Neutral,
-                            GoodwillTarget.Site); };
+                        Action r2 = delegate
+                        {
+                            GoodwillManager.TryRequestGoodwill(Goodwill.Neutral,
+                            GoodwillTarget.Site);
+                        };
 
-                        Action r3 = delegate { GoodwillManager.TryRequestGoodwill(Goodwill.Ally,
-                            GoodwillTarget.Site); };
+                        Action r3 = delegate
+                        {
+                            GoodwillManager.TryRequestGoodwill(Goodwill.Ally,
+                            GoodwillTarget.Site);
+                        };
 
                         RT_Dialog_3Button d1 = new RT_Dialog_3Button("Change Goodwill", "Set site's goodwill to",
                             "Enemy", "Neutral", "Ally", r1, r2, r3, null);
@@ -403,7 +422,7 @@ namespace GameClient
                         else DialogManager.PushNewDialog(new RT_Dialog_Error("This feature has been disabled in this server!"));
                     }
                 };
-                
+
                 gizmoList.Add(command_Config);
 
                 __result = gizmoList;

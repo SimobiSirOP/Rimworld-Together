@@ -1,6 +1,6 @@
 using Shared;
 
-namespace GameClient
+namespace GameClient.Managers
 {
     public static class KeepAliveManager
     {

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using GameClient.Managers;
+using GameClient.Scribers;
+using GameClient.Values;
 using HarmonyLib;
 using RimWorld;
 using Shared;
@@ -6,7 +8,7 @@ using Verse;
 using Verse.AI;
 using static Shared.CommonEnumerators;
 
-namespace GameClient
+namespace GameClient.Patches
 {
     [HarmonyPatch(typeof(Pawn_JobTracker), nameof(Pawn_JobTracker.StartJob))]
     public static class PatchStartNewJob
@@ -58,7 +60,7 @@ namespace GameClient
                     OnlineActivityClock.creationOrderBuffer.Add(order);
 
                     //KEEP ALWAYS AS AT THE BOTTOM AS POSSIBLE
-                    if (ScriberHelper.CheckIfThingIsHuman(__instance) || ScriberHelper.CheckIfThingIsAnimal(__instance)) 
+                    if (ScriberHelper.CheckIfThingIsHuman(__instance) || ScriberHelper.CheckIfThingIsAnimal(__instance))
                     {
                         OnlineActivityManagerHelper.AddPawnToMap((Pawn)__instance);
                     }
@@ -72,7 +74,7 @@ namespace GameClient
                     // IF COMING FROM HOST
                     if (OnlineActivityQueues.queuedThing == __instance)
                     {
-                        if (ScriberHelper.CheckIfThingIsHuman(__instance) || ScriberHelper.CheckIfThingIsAnimal(__instance)) 
+                        if (ScriberHelper.CheckIfThingIsHuman(__instance) || ScriberHelper.CheckIfThingIsAnimal(__instance))
                         {
                             OnlineActivityManagerHelper.AddPawnToMap((Pawn)__instance);
                         }
@@ -105,7 +107,7 @@ namespace GameClient
                     OnlineActivityClock.destructionOrderBuffer.Add(order);
 
                     //KEEP ALWAYS AS AT THE BOTTOM AS POSSIBLE
-                    if (ScriberHelper.CheckIfThingIsHuman(__instance) || ScriberHelper.CheckIfThingIsAnimal(__instance)) 
+                    if (ScriberHelper.CheckIfThingIsHuman(__instance) || ScriberHelper.CheckIfThingIsAnimal(__instance))
                     {
                         OnlineActivityManagerHelper.RemovePawnFromMap((Pawn)__instance);
                     }
@@ -119,7 +121,7 @@ namespace GameClient
                     // IF COMING FROM HOST
                     if (OnlineActivityQueues.queuedThing == __instance)
                     {
-                        if (ScriberHelper.CheckIfThingIsHuman(__instance) || ScriberHelper.CheckIfThingIsAnimal(__instance)) 
+                        if (ScriberHelper.CheckIfThingIsHuman(__instance) || ScriberHelper.CheckIfThingIsAnimal(__instance))
                         {
                             OnlineActivityManagerHelper.RemovePawnFromMap((Pawn)__instance);
                         }
@@ -300,7 +302,7 @@ namespace GameClient
                     // IF PLAYER ASKING FOR
                     else return false;
                 }
-            }    
+            }
         }
     }
 

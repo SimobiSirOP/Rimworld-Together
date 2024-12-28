@@ -6,7 +6,7 @@ namespace Shared
 
         public int[] Size;
 
-        public string Owner;
+        public string UID;
 
         public string CurWeatherDefName;
 

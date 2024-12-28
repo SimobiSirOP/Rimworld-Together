@@ -1,4 +1,6 @@
-namespace GameClient
+using GameClient.Dialogs;
+
+namespace GameClient.Managers
 {
     public static class AdminMenuManager
     {
@@ -10,9 +12,9 @@ namespace GameClient
 
         public static void ShowAdminMenu()
         {
-            RT_Dialog_ScrollButtons d1 = new RT_Dialog_ScrollButtons(dialogTitle, dialogDescription, 
+            RT_Dialog_ScrollButtons d1 = new RT_Dialog_ScrollButtons(dialogTitle, dialogDescription,
                 menuButtons, delegate { OpenSpecificMenu(); }, null);
-                
+
             DialogManager.PushNewDialog(d1);
         }
 

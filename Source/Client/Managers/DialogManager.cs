@@ -1,17 +1,19 @@
 ﻿using System;
+using GameClient.Dialogs;
+using GameClient.Values;
 using UnityEngine;
 using Verse;
 
-namespace GameClient
+namespace GameClient.Managers
 {
     public static class DialogManager
     {
         public static RT_Dialog_Wait dialogWait;
-        
+
         public static RT_Dialog_YesNo dialogYesNo;
 
         public static RT_Dialog_2Button dialog2Button;
-        
+
         public static RT_Dialog_3Button dialog3Button;
 
         public static RT_Dialog_OK dialogOK;
@@ -62,6 +64,8 @@ namespace GameClient
 
         public static string dialogButtonListingResultString;
 
+        public static RT_Dialog_ServerListing dialogServerListing;
+
         public static RT_Dialog_ListingWithTuple dialogTupleListing;
 
         public static string[] dialogTupleListingResultString;
@@ -69,7 +73,9 @@ namespace GameClient
         public static int[] dialogTupleListingResultInt;
 
         public static Window currentDialog;
+
         public static Window previousDialog;
+        internal static int dialogServerListingIndex;
 
         public static void PushNewDialog(Window window)
         {
@@ -89,7 +95,7 @@ namespace GameClient
 
     public static class DialogManagerHelper
     {
-        public enum RectLocation { TopLeft, TopCenter, TopRight, MiddleLeft, MiddleCenter, MiddleRight, BottomLeft, BottomCenter, BottomRight  }
+        public enum RectLocation { TopLeft, TopCenter, TopRight, MiddleLeft, MiddleCenter, MiddleRight, BottomLeft, BottomCenter, BottomRight }
 
         public static readonly Vector2 defaultButtonSize = new Vector2(150f, 38f);
 
@@ -98,13 +104,13 @@ namespace GameClient
             return desiredLocation switch
             {
                 RectLocation.TopLeft => new Rect(new Vector2(origin.xMin, origin.yMin), reference),
-                RectLocation.TopCenter => new Rect(new Vector2(origin.width / 2 - (reference.x / 2), origin.yMin), reference),
+                RectLocation.TopCenter => new Rect(new Vector2(origin.width / 2 - reference.x / 2, origin.yMin), reference),
                 RectLocation.TopRight => new Rect(new Vector2(origin.xMax - reference.x, origin.yMin), reference),
-                RectLocation.MiddleLeft => new Rect(new Vector2(origin.xMin, origin.height / 2 - (reference.y / 2)), reference),
-                RectLocation.MiddleCenter => new Rect(new Vector2(origin.width / 2 - (reference.x / 2), origin.height / 2 - (reference.y / 2)), reference),
-                RectLocation.MiddleRight => new Rect(new Vector2(origin.xMax - reference.x, origin.height / 2 - (reference.y / 2)), reference),
+                RectLocation.MiddleLeft => new Rect(new Vector2(origin.xMin, origin.height / 2 - reference.y / 2), reference),
+                RectLocation.MiddleCenter => new Rect(new Vector2(origin.width / 2 - reference.x / 2, origin.height / 2 - reference.y / 2), reference),
+                RectLocation.MiddleRight => new Rect(new Vector2(origin.xMax - reference.x, origin.height / 2 - reference.y / 2), reference),
                 RectLocation.BottomLeft => new Rect(new Vector2(origin.xMin, origin.yMax - reference.y), reference),
-                RectLocation.BottomCenter => new Rect(new Vector2(origin.width / 2 - (reference.x / 2), origin.yMax - reference.y), reference),
+                RectLocation.BottomCenter => new Rect(new Vector2(origin.width / 2 - reference.x / 2, origin.yMax - reference.y), reference),
                 RectLocation.BottomRight => new Rect(new Vector2(origin.xMax - reference.x, origin.yMax - reference.y), reference),
                 _ => throw new IndexOutOfRangeException()
             };

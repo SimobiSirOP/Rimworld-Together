@@ -1,7 +1,10 @@
-﻿using Shared;
+﻿using GameServer.Core;
+using GameServer.Misc;
+using GameServer.TCP;
+using Shared;
 using static Shared.CommonEnumerators;
 
-namespace GameServer
+namespace GameServer.Managers
 {
     public static class SaveManager
     {
@@ -22,8 +25,8 @@ namespace GameServer
 
         public static void ReceiveSavePartFromClient(ServerClient client, SaveData data)
         {
-            string baseClientSavePath = Path.Combine(Master.savesPath, client.userFile.Username + fileExtension);
-            string tempClientSavePath = Path.Combine(Master.savesPath, client.userFile.Username + tempFileExtension);
+            string baseClientSavePath = Path.Combine(Master.savesPath, client.userFile.Uid + fileExtension);
+            string tempClientSavePath = Path.Combine(Master.savesPath, client.userFile.Uid + tempFileExtension);
 
             //if this is the first packet
             if (client.listener.downloadManager == null)
@@ -59,13 +62,13 @@ namespace GameServer
 
         public static void SendSavePartToClient(ServerClient client)
         {
-            string baseClientSavePath = Path.Combine(Master.savesPath, client.userFile.Username + fileExtension);
-            string tempClientSavePath = Path.Combine(Master.savesPath, client.userFile.Username + tempFileExtension);
+            string baseClientSavePath = Path.Combine(Master.savesPath, client.userFile.Uid + fileExtension);
+            string tempClientSavePath = Path.Combine(Master.savesPath, client.userFile.Uid + tempFileExtension);
 
             //if this is the first packet
             if (client.listener.uploadManager == null)
             {
-                Logger.Message($"[Load save] > {client.userFile.Username} | {client.userFile.SavedIP}");
+                InformationDisplayer.DisplayLoadGame(client);
 
                 client.listener.uploadManager = new UploadManager();
                 client.listener.uploadManager.PrepareUpload(baseClientSavePath);
@@ -77,7 +80,7 @@ namespace GameServer
             data._fileBytes = client.listener.uploadManager.ReadFilePart();
             data._isLastPart = client.listener.uploadManager.isLastPart;
             data._stepMode = SaveStepMode.Receive;
-            if(!Master.serverConfig.SyncLocalSave) data._instructions = (int)SaveMode.Strict;
+            if (!Master.serverConfig.SyncLocalSave) data._instructions = (int)SaveMode.Strict;
 
             Packet packet = Packet.CreatePacketFromObject(nameof(SaveManager), data);
             client.listener.EnqueuePacket(packet);
@@ -89,21 +92,18 @@ namespace GameServer
 
         private static void OnUserSave(ServerClient client, SaveData fileTransferData)
         {
-            if (fileTransferData._instructions == (int)SaveMode.Disconnect)
-            {
-                client.listener.disconnectFlag = true;
-                Logger.Message($"[Save game] > {client.userFile.Username} > Disconnect");
-            }
-            else Logger.Message($"[Save game] > {client.userFile.Username} > Autosave");
+            if (fileTransferData._instructions == (int)SaveMode.Disconnect) client.listener.disconnectFlag = true;
+
+            InformationDisplayer.DisplaySaveGame(client);
         }
 
         public static bool CheckIfUserHasSave(ServerClient client)
         {
             string[] saves = Directory.GetFiles(Master.savesPath);
-            foreach(string save in saves)
+            foreach (string save in saves)
             {
                 if (!save.EndsWith(fileExtension)) continue;
-                if (Path.GetFileNameWithoutExtension(save) == client.userFile.Username) return true;
+                if (Path.GetFileNameWithoutExtension(save) == client.userFile.Uid) return true;
             }
 
             return false;
@@ -125,48 +125,44 @@ namespace GameServer
         {
             if (!CheckIfUserHasSave(client))
             {
-                ResponseShortcutManager.SendIllegalPacket(client, $"Player {client.userFile.Username}'s save was attempted to be reset while the player doesn't have a save");
+                ResponseShortcutManager.SendIllegalPacket(client, $"Player {client.userFile.Uid}'s save was attempted to be reset while the player doesn't have a save");
                 return;
             }
             client.listener.disconnectFlag = true;
 
-            ResetPlayerData(client, client.userFile.Username);
+            ResetPlayerData(client, client.userFile.Uid);
         }
 
-        public static void ResetPlayerData(ServerClient client, string username)
+        public static void ResetPlayerData(ServerClient client, string uid)
         {
-            BackupManager.BackupUser(username);
+            BackupManager.BackupUser(uid);
 
             if (client != null) client.listener.disconnectFlag = true;
 
             // Delete save file
-            try { File.Delete(Path.Combine(Master.savesPath, username + fileExtension)); }
-            catch { Logger.Warning($"Failed to find {username}'s save"); }
-
-            // Delete map files
-            MapFile[] userMaps = MapManager.GetAllMapsFromUsername(username);
-            foreach (MapFile map in userMaps) MapManager.DeleteMap(map);
+            try { File.Delete(Path.Combine(Master.savesPath, uid + fileExtension)); }
+            catch { Printer.Warning($"Failed to find {client.userFile.Label}'s save"); }
 
             // Delete caravan files
-            CaravanFile[] userCaravans = CaravanManagerHelper.GetCaravansFromOwner(username);
-            foreach (CaravanFile caravan in userCaravans) CaravanManager.RemoveCaravan(username, caravan);
+            CaravanFile[] userCaravans = CaravanManagerHelper.GetCaravansFromUID(uid);
+            foreach (CaravanFile caravan in userCaravans) CaravanManager.RemoveCaravan(uid, caravan);
 
             // Delete site files
-            SiteIdendityFile[] playerSites = SiteManagerHelper.GetAllSitesFromUsername(username);
+            SiteIdendityFile[] playerSites = SiteManagerHelper.GetAllSitesFromUID(uid);
             foreach (SiteIdendityFile site in playerSites) SiteManager.DestroySiteFromFile(site);
 
             // Delete settlement files
-            SettlementFile[] playerSettlements = PlayerSettlementManager.GetAllSettlementsFromUsername(username);
+            SettlementFile[] playerSettlements = PlayerSettlementManager.GetAllSettlementsFromUsername(uid);
             foreach (SettlementFile settlement in playerSettlements)
             {
                 PlayerSettlementData settlementData = new PlayerSettlementData();
-                settlementData._settlementData.Tile = settlement.Tile;
-                settlementData._settlementData.Owner = settlement.Owner;
+                settlementData._settlementFile.Tile = settlement.Tile;
+                settlementData._settlementFile.UID = settlement.UID;
 
                 PlayerSettlementManager.RemoveSettlement(client, settlementData);
             }
 
-            Logger.Warning($"[Reset player data] > {username}");
+            InformationDisplayer.DisplayResetPlayer(uid);
         }
     }
 }

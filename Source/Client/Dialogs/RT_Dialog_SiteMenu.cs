@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
 using RimWorld;
 using Shared;
+using GameClient.Managers;
 
-namespace GameClient
+namespace GameClient.Dialogs
 {
     public class RT_Dialog_SiteMenu : Window
     {
         public List<SiteInfoFile> SiteInfoFileList = new List<SiteInfoFile>();
 
         public Vector2 initialSize = new Vector2(700f, 450);
-        
+
         public override Vector2 InitialSize => initialSize;
 
         public string title = "Choose a site";
@@ -22,7 +22,7 @@ namespace GameClient
 
         private bool isInConfigMode;
 
-        public RT_Dialog_SiteMenu(bool configMode) 
+        public RT_Dialog_SiteMenu(bool configMode)
         {
             isInConfigMode = configMode;
             DialogManager.dialogSiteMenu = this;
@@ -36,10 +36,10 @@ namespace GameClient
             float centeredX = rect.width / 2;
             Text.Font = GameFont.Medium;
             Widgets.Label(new Rect(centeredX - Text.CalcSize(title).x / 2, rect.y, Text.CalcSize(title).x, Text.CalcSize(title).y), title);
-            if(Widgets.CloseButtonFor(rect))Close();
+            if (Widgets.CloseButtonFor(rect)) Close();
 
             Rect mainRect = new Rect(0, 50f, rect.width, rect.height - 50f);
-            float height = 6f + (float)SiteManager.siteDefs.Count() * 50f;
+            float height = 6f + SiteManager.siteDefs.Count() * 50f;
             Rect viewRect = new Rect(0f, 50f, mainRect.width - 16f, height);
             Widgets.BeginScrollView(mainRect, ref scrollPosition, viewRect);
             float num = 50;
@@ -73,12 +73,12 @@ namespace GameClient
             Widgets.DrawTextureFitted(textRect, thing.ExpandingIconTexture, 1f);
             Widgets.Label(fixedRect, thing.description);
 
-            if (Mouse.IsOver(highLightRect)) 
+            if (Mouse.IsOver(highLightRect))
             {
                 Widgets.DrawLineHorizontal(highLightRect.x, highLightRect.y, highLightRect.width);
                 Widgets.DrawLineHorizontal(highLightRect.x, highLightRect.yMax, highLightRect.width);
                 Widgets.DrawLineVertical(highLightRect.x, highLightRect.y, highLightRect.height);
-                Widgets.DrawLineVertical(highLightRect.xMax - 1 , highLightRect.y, highLightRect.height);
+                Widgets.DrawLineVertical(highLightRect.xMax - 1, highLightRect.y, highLightRect.height);
             }
 
             if (Widgets.ButtonInvisible(highLightRect))

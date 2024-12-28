@@ -1,7 +1,9 @@
-﻿using Shared;
+﻿using GameClient.Scribers;
+using GameClient.TCP;
+using Shared;
 using Verse;
 
-namespace GameClient
+namespace GameClient.Managers
 {
     //Class that handles map functions for the mod to use
 

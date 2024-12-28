@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using GameClient.Dialogs;
+using GameClient.Misc;
+using GameClient.Scribers;
+using GameClient.TCP;
+using GameClient.Values;
 using RimWorld;
 using RimWorld.Planet;
 using Shared;
@@ -9,7 +14,7 @@ using Verse;
 using Verse.Sound;
 using static Shared.CommonEnumerators;
 
-namespace GameClient
+namespace GameClient.Managers
 {
     //Class that handles all the thing transfers between clients in the mod
 
@@ -103,7 +108,7 @@ namespace GameClient
             {
                 ThingOwner directlyHeldThings = pod.GetDirectlyHeldThings();
 
-                for(int i = 0; i < directlyHeldThings.Count(); i++)
+                for (int i = 0; i < directlyHeldThings.Count(); i++)
                 {
                     TransferManagerHelper.AddThingToTransferManifest(directlyHeldThings[i], directlyHeldThings[i].stackCount);
                 }
@@ -167,7 +172,7 @@ namespace GameClient
 
             catch
             {
-                Logger.Warning("Rethrowing transfer items, might be RimWorld's fault");
+                Printer.Warning("Rethrowing transfer items, might be RimWorld's fault");
 
                 Thread.Sleep(100);
 
@@ -287,12 +292,12 @@ namespace GameClient
 
             catch
             {
-                Logger.Warning("Rethrowing transfer items, might be RimWorld's fault");
+                Printer.Warning("Rethrowing transfer items, might be RimWorld's fault");
 
                 Thread.Sleep(100);
 
                 ReceiveTransferRequest(transferData);
-            }        
+            }
         }
 
         //Executes after receiving a rebound transfer request
@@ -309,7 +314,7 @@ namespace GameClient
 
             catch
             {
-                Logger.Warning("Rethrowing transfer items, might be RimWorld's fault");
+                Printer.Warning("Rethrowing transfer items, might be RimWorld's fault");
 
                 Thread.Sleep(100);
 
@@ -356,7 +361,7 @@ namespace GameClient
 
         public static void LaunchDropPods()
         {
-            SessionValues.chosendPods.TryLaunch(SessionValues.chosenSettlement.Tile, 
+            SessionValues.chosendPods.TryLaunch(SessionValues.chosenSettlement.Tile,
                 new TransportPodsArrivalAction_GiveGift(SessionValues.chosenSettlement));
         }
     }

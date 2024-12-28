@@ -1,18 +1,16 @@
-﻿using Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GameServer.Core;
+using GameServer.Misc;
+using GameServer.TCP;
+using Shared;
 using static Shared.CommonEnumerators;
 
-namespace GameServer
+namespace GameServer.Managers
 {
     public static class PollutionManager
     {
         public static void ParsePacket(ServerClient client, Packet packet)
         {
-            if (!Master.actionValues.EnablePollutionSpread)
+            if (!Master.actionConfigs.EnablePollutionSpread)
             {
                 ResponseShortcutManager.SendIllegalPacket(client, "Tried to use disabled feature!");
                 return;
@@ -54,10 +52,10 @@ namespace GameServer
                 Main_.SaveValueFile(ServerFileMode.World, false);
             }
 
-            catch 
+            catch
             {
-                Logger.Warning($"Could not add pollution to tile {data._pollutionData.tile}. Coming from {client.userFile.Username}");
-                Logger.Warning($"Additional debugging info here:\n{StringUtilities.ToString(data)}", LogImportanceMode.Verbose);
+                Printer.Warning($"Could not add pollution to tile {data._pollutionData.tile}. Coming from {client.userFile.Uid}");
+                Printer.Warning($"Additional debugging info here:\n{StringUtilities.ToString(data)}", LogImportanceMode.Verbose);
             }
         }
     }

@@ -1,20 +1,16 @@
-﻿using HarmonyLib;
-using RimWorld;
-using RimWorld.Planet;
+﻿using GameClient.Managers;
+using GameClient.TCP;
+using GameClient.Values;
+using HarmonyLib;
 using Shared;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using UnityEngine.Tilemaps;
 using Verse;
 using static Shared.CommonEnumerators;
 
-namespace GameClient
+namespace GameClient.Patches
 {
     public static class PollutionPatch
     {
@@ -38,9 +34,9 @@ namespace GameClient
 
                 for (int i = 0; i < codes.Count; i++)
                 {
-                    if (codes[i].opcode == OpCodes.Stloc_0)  
+                    if (codes[i].opcode == OpCodes.Stloc_0)
                     {
-                        codes.Insert(i + 1, new CodeInstruction(OpCodes.Ldloc_0)); 
+                        codes.Insert(i + 1, new CodeInstruction(OpCodes.Ldloc_0));
                         codes.Insert(i + 2, new CodeInstruction(OpCodes.Call, method));
                     }
                 }
@@ -68,6 +64,5 @@ namespace GameClient
                 }
             }
         }
-
     }
 }

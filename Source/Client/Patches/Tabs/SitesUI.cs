@@ -1,10 +1,12 @@
 ﻿using System.Linq;
+using GameClient.Managers;
+using GameClient.TCP;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 using static Shared.CommonEnumerators;
 
-namespace GameClient
+namespace GameClient.Patches.Tabs
 {
     public class SitesUI : WITab
     {
@@ -44,7 +46,7 @@ namespace GameClient
         {
             var orderedDictionary = SiteManager.playerSites.OrderBy(x => x.Label);
 
-            float height = 6f + (float)orderedDictionary.Count() * 30f;
+            float height = 6f + orderedDictionary.Count() * 30f;
             Rect viewRect = new Rect(mainRect.x, mainRect.y, mainRect.width - 16f, height);
 
             Widgets.BeginScrollView(mainRect, ref scrollPosition, viewRect);

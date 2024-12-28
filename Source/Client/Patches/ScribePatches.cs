@@ -2,11 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using GameClient.Misc;
+using GameClient.Scribers;
+using GameClient.TCP;
+using GameClient.Values;
 using HarmonyLib;
 using Verse;
 using static Shared.CommonEnumerators;
 
-namespace GameClient
+namespace GameClient.Patches
 {
     [HarmonyPatch(typeof(ScribeSaver), nameof(ScribeSaver.InitSaving))]
     public static class PatchSaving
@@ -21,7 +25,7 @@ namespace GameClient
                 try
                 {
                     Scribe.mode = LoadSaveMode.Saving;
-                    
+
                     XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
                     xmlWriterSettings.Indent = true;
                     xmlWriterSettings.IndentChars = "\t";
@@ -34,7 +38,7 @@ namespace GameClient
 
                 catch (Exception e)
                 {
-                    Logger.Error($"Exception while init save patched scribe: {e}");
+                    Printer.Error($"Exception while init save patched scribe: {e}");
                     __instance.ForceStop();
                     throw;
                 }
@@ -70,7 +74,7 @@ namespace GameClient
 
                 catch (Exception e)
                 {
-                    Logger.Error($"Exception while init load patched scribe: {e}");
+                    Printer.Error($"Exception while init load patched scribe: {e}");
                     __instance.ForceStop();
                     throw;
                 }
@@ -108,11 +112,11 @@ namespace GameClient
                         ___frameAssignments.Remove(item);
                     }
                 }
-                
-                catch (Exception e) 
-                { 
+
+                catch (Exception e)
+                {
                     ___frameAssignments.Clear();
-                    Logger.Error(e.ToString(), LogImportanceMode.Extreme); 
+                    Printer.Error(e.ToString(), LogImportanceMode.Extreme);
                 }
 
                 ___tmpPawnsToFree.Clear();
@@ -158,13 +162,13 @@ namespace GameClient
             else
             {
                 try { ___allObjectsByLoadID.Add(reffable.GetUniqueLoadID(), reffable); }
-                catch (Exception e) { Logger.Error(e.ToString(), LogImportanceMode.Extreme); }
+                catch (Exception e) { Printer.Error(e.ToString(), LogImportanceMode.Extreme); }
 
                 if (reffable is not Thing thing) return false;
 
                 try { ___allThingsByThingID.Add(thing.thingIDNumber, reffable); }
-                catch (Exception e) { Logger.Error(e.ToString(), LogImportanceMode.Extreme); }
-                
+                catch (Exception e) { Printer.Error(e.ToString(), LogImportanceMode.Extreme); }
+
                 return false;
             }
         }

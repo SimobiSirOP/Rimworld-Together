@@ -1,6 +1,7 @@
-﻿using Shared;
+﻿using GameServer.Commands;
+using GameServer.Misc;
 
-namespace GameServer
+namespace GameServer.Managers
 {
     public static class ConsoleManager
     {
@@ -11,7 +12,7 @@ namespace GameServer
             bool interactiveConsole = false;
 
             try { interactiveConsole = Console.In.Peek() != -1 ? true : false; }
-            catch { Logger.Warning($"Couldn't find interactive console, disabling commands"); }
+            catch { Printer.Warning($"Couldn't find interactive console, disabling commands"); }
 
             if (interactiveConsole)
             {
@@ -31,12 +32,12 @@ namespace GameServer
             try
             {
                 BaseServerCommand commandToFetch = ConsoleCommands.commands.ToList().Find(x => x.prefix == parsedPrefix);
-                if (commandToFetch == null) Logger.Warning($"Command '{parsedPrefix}' was not found");
+                if (commandToFetch == null) Printer.Warning($"Command '{parsedPrefix}' was not found");
                 else
                 {
                     if (commandToFetch.parameters != parsedParameters && commandToFetch.parameters != -1)
                     {
-                        Logger.Warning($"Command '{commandToFetch.prefix}' wanted [{commandToFetch.parameters}] parameters "
+                        Printer.Warning($"Command '{commandToFetch.prefix}' wanted [{commandToFetch.parameters}] parameters "
                             + $"but was passed [{parsedParameters}]");
                     }
 
@@ -44,11 +45,11 @@ namespace GameServer
                     {
                         if (commandToFetch.commandAction != null) commandToFetch.commandAction.Invoke();
 
-                        else Logger.Warning($"Command '{commandToFetch.prefix}' didn't have any action built in");
+                        else Printer.Warning($"Command '{commandToFetch.prefix}' didn't have any action built in");
                     }
                 }
             }
-            catch (Exception e) { Logger.Error($"Couldn't parse command '{parsedPrefix}'. Reason: {e}"); }
+            catch (Exception e) { Printer.Error($"Couldn't parse command '{parsedPrefix}'. Reason: {e}"); }
         }
     }
 }

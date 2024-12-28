@@ -1,8 +1,9 @@
-﻿using RimWorld;
+﻿using GameClient.TCP;
+using RimWorld;
 using Shared;
 using Verse;
 
-namespace GameClient
+namespace GameClient.Managers
 {
     public static class DifficultyManager
     {

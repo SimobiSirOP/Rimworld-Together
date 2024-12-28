@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
+using GameClient.Managers;
+using GameClient.TCP;
+using GameClient.Values;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
 using static Shared.CommonEnumerators;
 
-namespace GameClient
+namespace GameClient.Patches
 {
     [HarmonyPatch(typeof(TradeDeal), "AddAllTradeables")]
     public static class AddTradeablePatch
@@ -15,7 +18,7 @@ namespace GameClient
         {
             if (Network.state == ClientNetworkState.Disconnected) return true;
             if (!FactionValues.playerFactions.Contains(TradeSession.trader.Faction)) return true;
-            
+
             ___tradeables = new List<Tradeable>();
             ___tradeables.AddRange(SessionValues.listToShowInTradesMenu);
             return false;

@@ -1,7 +1,9 @@
-﻿using Shared;
+﻿using GameServer.Misc;
+using GameServer.TCP;
+using Shared;
 using static Shared.CommonEnumerators;
 
-namespace GameServer
+namespace GameServer.Managers
 {
     public static class ResponseShortcutManager
     {
@@ -14,10 +16,10 @@ namespace GameServer
             client.listener.EnqueuePacket(packet);
             client.listener.disconnectFlag = true;
 
-            if (shouldBroadcast) 
-            { 
-                Logger.Warning($"[Illegal action] > {client.userFile.Username} > {client.userFile.SavedIP}");
-                Logger.Warning($"[Illegal reason] > {message}");
+            if (shouldBroadcast)
+            {
+                Printer.Warning($"[Illegal action] > {client.userFile.Uid} > {client.userFile.SavedIP}");
+                Printer.Warning($"[Illegal reason] > {message}");
             }
         }
 
@@ -25,7 +27,7 @@ namespace GameServer
         {
             ResponseShortcutData data = new ResponseShortcutData();
             data.stepMode = ResponseStepMode.UserUnavailable;
-            
+
             Packet packet = Packet.CreatePacketFromObject(nameof(ResponseShortcutManager), data);
             client.listener.EnqueuePacket(packet);
         }
@@ -39,11 +41,11 @@ namespace GameServer
             client.listener.EnqueuePacket(packet);
         }
 
-        public static void SendNoPowerPacket(ServerClient client, PlayerFactionData data)
+        public static void SendNoPowerPacket(ServerClient client, PlayerGuildData data)
         {
-            data._stepMode = FactionStepMode.NoPower;
+            data._stepMode = GuildStepMode.NoPower;
 
-            Packet packet = Packet.CreatePacketFromObject(nameof(FactionManager), data);
+            Packet packet = Packet.CreatePacketFromObject(nameof(GuildManager), data);
             client.listener.EnqueuePacket(packet);
         }
     }

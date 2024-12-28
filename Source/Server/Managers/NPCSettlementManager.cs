@@ -1,13 +1,16 @@
-﻿using Shared;
+﻿using GameServer.Core;
+using GameServer.Misc;
+using GameServer.TCP;
+using Shared;
 using static Shared.CommonEnumerators;
 
-namespace GameServer
+namespace GameServer.Managers
 {
     public static class NPCSettlementManager
     {
         public static void ParsePacket(ServerClient client, Packet packet)
         {
-            if (!Master.actionValues.EnableNPCDestruction)
+            if (!Master.actionConfigs.EnableNPCDestruction)
             {
                 ResponseShortcutManager.SendIllegalPacket(client, "Tried to use disabled feature!");
                 return;
@@ -33,14 +36,14 @@ namespace GameServer
             {
                 ResponseShortcutManager.SendIllegalPacket(client, "Tried removing a non-existing NPC settlement");
             }
-            
+
             else
             {
                 DeleteSettlement(settlement);
 
                 BroadcastSettlementDeletion(settlement);
 
-                Logger.Warning($"[Delete NPC settlement] > {settlement.tile} > {client.userFile.Username}");
+                Printer.Warning($"[Delete NPC settlement] > {settlement.tile} > {client.userFile.Uid}");
             }
         }
 

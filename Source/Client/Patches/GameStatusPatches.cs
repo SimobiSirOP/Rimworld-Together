@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using GameClient.Managers;
+using GameClient.TCP;
+using GameClient.Values;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
@@ -10,7 +13,7 @@ using Steamworks;
 using Verse;
 using static Shared.CommonEnumerators;
 
-namespace GameClient
+namespace GameClient.Patches
 {
     public class GameStatusPatches
     {
@@ -89,7 +92,7 @@ namespace GameClient
                 if (Network.state == ClientNetworkState.Connected)
                 {
                     PlayerSettlementData settlementData = new PlayerSettlementData();
-                    settlementData._settlementData.Tile = settlement.Tile;
+                    settlementData._settlementFile.Tile = settlement.Tile;
                     settlementData._stepMode = SettlementStepMode.Remove;
 
                     Packet packet = Packet.CreatePacketFromObject(nameof(PlayerSettlementManager), settlementData);

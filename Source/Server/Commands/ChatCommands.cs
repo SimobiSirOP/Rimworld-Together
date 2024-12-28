@@ -1,9 +1,11 @@
 using Shared;
 using static Shared.CommonEnumerators;
-using static GameServer.ChatCommandActions;
-using static GameServer.ChatCommands;
+using static GameServer.Commands.ChatCommandActions;
+using static GameServer.Commands.ChatCommands;
+using GameServer.Managers;
+using GameServer.TCP;
 
-namespace GameServer
+namespace GameServer.Commands
 {
     public class BaseChatCommand
     {
@@ -133,12 +135,12 @@ namespace GameServer
                             chatData._messageColor = MessageColor.Private;
 
                             //Send to sender
-                            chatData._username = $">> {toFind.userFile.Username}";
+                            chatData._username = $">> {toFind.userFile.Label}";
                             Packet packet = Packet.CreatePacketFromObject(nameof(ChatManager), chatData);
                             targetClient.listener.EnqueuePacket(packet);
 
                             //Send to recipient
-                            chatData._username = $"<< {targetClient.userFile.Username}";
+                            chatData._username = $"<< {targetClient.userFile.Label}";
                             packet = Packet.CreatePacketFromObject(nameof(ChatManager), chatData);
                             toFind.listener.EnqueuePacket(packet);
 

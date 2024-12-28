@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using GameClient.Managers;
 using RimWorld;
 using UnityEngine;
 using Verse;
-using static GameClient.DialogManagerHelper;
+using static GameClient.Managers.DialogManagerHelper;
 
-namespace GameClient
+namespace GameClient.Dialogs
 {
     public class RT_Dialog_ListingWithTuple : Window
     {
@@ -126,7 +126,7 @@ namespace GameClient
         {
             List<FloatMenuOption> list = new List<FloatMenuOption>();
 
-            foreach(string str in values)
+            foreach (string str in values)
             {
                 list.Add(new FloatMenuOption(str, delegate
                 {

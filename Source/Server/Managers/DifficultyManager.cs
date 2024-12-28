@@ -1,7 +1,10 @@
-﻿using Shared;
+﻿using GameServer.Core;
+using GameServer.Misc;
+using GameServer.TCP;
+using Shared;
 using static Shared.CommonEnumerators;
 
-namespace GameServer
+namespace GameServer.Managers
 {
     public static class DifficultyManager
     {
@@ -12,17 +15,17 @@ namespace GameServer
 
         public static void SetCustomDifficulty(ServerClient client, DifficultyData difficultyData)
         {
-            if (!client.userFile.IsAdmin) 
+            if (!client.userFile.IsAdmin)
             {
-                UserManager.BanPlayerFromName(client.userFile.Username);
-                Logger.Warning($"Player {client.userFile.Username} attempted to set the custom difficulty while not being an admin");
+                UserManager.BanPlayerFromName(client.userFile.Uid);
+                Printer.Warning($"Player {client.userFile.Uid} attempted to set the custom difficulty while not being an admin");
             }
-            
-            else 
+
+            else
             {
                 Master.difficultyValues = difficultyData._values;
                 Main_.SaveValueFile(ServerFileMode.Difficulty, true);
-                Logger.Warning($"[Set difficulty] > {client.userFile.Username}");
+                Printer.Warning($"[Set difficulty] > {client.userFile.Uid}");
             }
         }
     }

@@ -9,6 +9,8 @@ namespace Shared
 
         public bool _isClientFactionMember;
 
+        public ServerValuesFile _serverValues;
+
         public SiteValuesFile _siteValues;
 
         public EventFile[] _eventValues;

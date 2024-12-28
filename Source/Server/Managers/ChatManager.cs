@@ -1,15 +1,20 @@
+using GameServer.Commands;
+using GameServer.Core;
+using GameServer.Managers.External;
+using GameServer.Misc;
+using GameServer.TCP;
 using Shared;
 using System.Text;
 using static Shared.CommonEnumerators;
 
-namespace GameServer
+namespace GameServer.Managers
 {
     public static class ChatManager
     {
         private static readonly Semaphore logSemaphore = new Semaphore(1, 1);
-        
+
         private static readonly Semaphore commandSemaphore = new Semaphore(1, 1);
-        
+
         private static readonly string systemName = "CONSOLE";
 
         private static readonly string notificationName = "SERVER";
@@ -53,7 +58,7 @@ namespace GameServer
             string chatCommand = "";
             for (int i = 0; i < command.Length; i++) chatCommand += command[i] + "";
 
-            ChatManagerHelper.ShowChatInConsole(client.userFile.Username, chatCommand);
+            ChatManagerHelper.ShowChatInConsole(client.userFile.Label, chatCommand);
 
             commandSemaphore.Release();
         }
@@ -63,7 +68,7 @@ namespace GameServer
             if (Master.serverConfig == null) return;
 
             ChatData chatData = new ChatData();
-            chatData._username = client.userFile.Username;
+            chatData._username = client.userFile.Label;
             chatData._message = message;
             chatData._usernameColor = client.userFile.IsAdmin ? UserColor.Admin : UserColor.Normal;
             chatData._messageColor = client.userFile.IsAdmin ? MessageColor.Admin : MessageColor.Normal;
@@ -71,8 +76,8 @@ namespace GameServer
             Packet packet = Packet.CreatePacketFromObject(nameof(ChatManager), chatData);
             NetworkHelper.SendPacketToAllClients(packet);
 
-            WriteToLogs(client.userFile.Username, message);
-            ChatManagerHelper.ShowChatInConsole(client.userFile.Username, message);
+            WriteToLogs(client.userFile.Label, message);
+            ChatManagerHelper.ShowChatInConsole(client.userFile.Label, message);
 
             if (Master.discordConfig.Enabled && Master.discordConfig.ChatChannelId != 0) DiscordManager.SendMessageToChatChannel(chatData._username, message);
         }
@@ -157,11 +162,11 @@ namespace GameServer
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append($"[{DateTime.Now:HH:mm:ss}] | [" + username + "]: " + message);
             stringBuilder.Append(Environment.NewLine);
-    
+
             DateTime dateTime = DateTime.Now.Date;
             string nowFileName = (dateTime.Year + "-" + dateTime.Month.ToString("D2") + "-" + dateTime.Day.ToString("D2")).ToString();
             string nowFullPath = Master.chatLogsPath + Path.DirectorySeparatorChar + nowFileName + ".txt";
-    
+
             File.AppendAllText(nowFullPath, stringBuilder.ToString());
             stringBuilder.Clear();
 
@@ -173,7 +178,7 @@ namespace GameServer
     {
         public static ServerClient GetUserFromName(string username)
         {
-            return NetworkHelper.GetConnectedClientFromUsername(username);
+            return NetworkHelper.GetConnectedClientFromUid(username);
         }
 
         public static BaseChatCommand GetCommandFromName(string commandName)
@@ -189,10 +194,10 @@ namespace GameServer
         public static void ShowChatInConsole(string username, string message, bool fromDiscord = false)
         {
             if (!Master.serverConfig.DisplayChatInConsole) return;
-            else 
+            else
             {
-                if (fromDiscord) Logger.Message($"[Discord] > {username} > {message}");
-                else Logger.Message($"[Chat] > {username} > {message}");
+                if (fromDiscord) Printer.Message($"[Discord] > {username} > {message}");
+                else InformationDisplayer.DisplayChatMap(username, message);
             }
         }
     }

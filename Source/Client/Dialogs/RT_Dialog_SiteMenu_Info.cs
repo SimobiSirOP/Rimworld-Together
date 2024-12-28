@@ -1,24 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
 using RimWorld;
 using Shared;
+using GameClient.Managers;
+using GameClient.Misc;
 
-namespace GameClient
+namespace GameClient.Dialogs
 {
-    public class RT_Dialog_SiteMenu_Info : Window 
+    public class RT_Dialog_SiteMenu_Info : Window
     {
         public Vector2 initialSize = new Vector2(450f, 250f);
-        
+
         public override Vector2 InitialSize => initialSize;
 
         public SitePartDef sitePartDef;
 
         public SiteInfoFile configFile;
 
-        public Dictionary<ThingDef,int> costThing = new Dictionary<ThingDef, int>();
+        public Dictionary<ThingDef, int> costThing = new Dictionary<ThingDef, int>();
 
         public Dictionary<ThingDef, int> rewardThing = new Dictionary<ThingDef, int>();
 
@@ -38,25 +39,25 @@ namespace GameClient
             {
                 ThingDef toAdd = DefDatabase<ThingDef>.GetNamedSilentFail(configFile.DefNameCost[i]);
                 if (toAdd != null) costThing.Add(toAdd, configFile.Cost[i]);
-                else Logger.Warning($"{configFile.DefNameCost[i]} could not be found and won't be added to the list. Double check the def exists.");
+                else Printer.Warning($"{configFile.DefNameCost[i]} could not be found and won't be added to the list. Double check the def exists.");
             }
 
-            for (int i = 0; i < configFile.Rewards.Length; i++) 
+            for (int i = 0; i < configFile.Rewards.Length; i++)
             {
                 ThingDef toAdd = DefDatabase<ThingDef>.GetNamedSilentFail(configFile.Rewards[i].RewardDef);
                 if (toAdd != null) rewardThing.Add(toAdd, configFile.Rewards[i].RewardAmount);
-                else Logger.Warning($"{configFile.Rewards[i].RewardDef} could not be found and won't be added to the list. Double check the def exists.");
+                else Printer.Warning($"{configFile.Rewards[i].RewardDef} could not be found and won't be added to the list. Double check the def exists.");
             }
 
             if (rewardThing.Keys.Count == 0)
             {
-                Logger.Error($"Could not load any rewards for the sites. Please double check your configs to make sure they are valid");
+                Printer.Error($"Could not load any rewards for the sites. Please double check your configs to make sure they are valid");
                 invalid = true; // Apparently you can't "this.Close() in the constructor
             }
 
             if (costThing.Keys.Count == 0)
             {
-                Logger.Error($"Could not load any cost for the sites. Please double check your configs to make sure they are valid");
+                Printer.Error($"Could not load any cost for the sites. Please double check your configs to make sure they are valid");
                 invalid = true; // Apparently you can't "this.Close() in the constructor
             }
 
@@ -65,10 +66,10 @@ namespace GameClient
 
         public override void DoWindowContents(Rect mainRect)
         {
-            if (invalid) 
+            if (invalid)
             {
                 DialogManager.PushNewDialog(new RT_Dialog_Error("Site could not be loaded because of invalid configuration"));
-                this.Close();
+                Close();
             }
 
             Widgets.DrawLineHorizontal(mainRect.x, mainRect.y - 1, mainRect.width);
@@ -84,7 +85,7 @@ namespace GameClient
 
             Rect rightColumn = new Rect(mainRect.width / 2, mainRect.y + 30f, mainRect.width / 2, mainRect.height - 70f);
             float heightDesc = Text.CalcHeight(sitePartDef.description, rightColumn.width - 16f) / 2 + 9f;
-            float height = 40f + ((float)costThing.Count() * 25f) + ((float)rewardThing.Count() * 25f) + heightDesc;
+            float height = 40f + costThing.Count() * 25f + rewardThing.Count() * 25f + heightDesc;
             Rect viewRightColumn = new Rect(rightColumn.x, rightColumn.y, rightColumn.width - 16f, height);
 
             Widgets.BeginScrollView(rightColumn, ref scrollPosition, viewRightColumn);
@@ -93,7 +94,7 @@ namespace GameClient
 
             Widgets.Label(new Rect(viewRightColumn.x, num, viewRightColumn.width, heightDesc), sitePartDef.description); // Description of site
             num += heightDesc;
-            Widgets.Label(new Rect(viewRightColumn.x, num, viewRightColumn.width, 20f), ("Cost:"));
+            Widgets.Label(new Rect(viewRightColumn.x, num, viewRightColumn.width, 20f), "Cost:");
             num += 20f;
 
             foreach (ThingDef thing in costThing.Keys)

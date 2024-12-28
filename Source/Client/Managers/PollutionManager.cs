@@ -1,13 +1,13 @@
-﻿using RimWorld.Planet;
+﻿using GameClient.Patches;
+using RimWorld.Planet;
 using Shared;
 using System.Collections.Generic;
 using Verse;
-using static Shared.CommonEnumerators;
-namespace GameClient
+namespace GameClient.Managers
 {
     public static class PollutionManager
     {
-        public static void ParsePacket(Packet packet) 
+        public static void ParsePacket(Packet packet)
         {
             if (ModsConfig.BiotechActive)
             {
@@ -29,7 +29,7 @@ namespace GameClient
             if (!forceRefresh) PollutionManagerHelper.ForcePollutionLayerRefresh();
         }
 
-        public static void AddPollutedTileOrganic(PollutionDetails details) 
+        public static void AddPollutedTileOrganic(PollutionDetails details)
         {
             PollutionPatch.PatchAddPollution.addedByServer = true;
             WorldPollutionUtility.PolluteWorldAtTile(details.tile, details.quantity);

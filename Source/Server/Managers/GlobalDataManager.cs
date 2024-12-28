@@ -1,6 +1,8 @@
-﻿using Shared;
+﻿using GameServer.Core;
+using GameServer.TCP;
+using Shared;
 
-namespace GameServer
+namespace GameServer.Managers
 {
     public static class GlobalDataManager
     {
@@ -33,17 +35,18 @@ namespace GameServer
         {
             globalData._isClientAdmin = client.userFile.IsAdmin;
 
-            globalData._isClientFactionMember = client.userFile.FactionFile != null;
+            globalData._isClientFactionMember = client.userFile.GuildFile != null;
 
             return globalData;
         }
 
         public static ServerGlobalData GetServerValues(ServerGlobalData globalData)
         {
+            globalData._serverValues = new ServerValuesFile(Master.serverConfig.Name);
             globalData._eventValues = EventManagerHelper.loadedEvents;
             globalData._siteValues = Master.siteValues;
             globalData._difficultyValues = Master.difficultyValues;
-            globalData._actionValues = Master.actionValues;
+            globalData._actionValues = Master.actionConfigs;
             globalData._roadValues = Master.roadValues;
             return globalData;
         }
@@ -56,11 +59,12 @@ namespace GameServer
             {
                 SettlementFile file = new SettlementFile();
 
-                if (settlement.Owner == client.userFile.Username) continue;
+                if (settlement.UID == client.userFile.Uid) continue;
                 else
                 {
                     file.Tile = settlement.Tile;
-                    file.Owner = settlement.Owner;
+                    file.UID = settlement.UID;
+                    file.Label = settlement.Label;
                     file.Goodwill = GoodwillManager.GetSettlementGoodwill(client, settlement);
 
                     tempList.Add(file);
@@ -82,10 +86,10 @@ namespace GameServer
                 SiteIdendityFile file = new SiteIdendityFile();
 
                 file.Tile = site.Tile;
-                file.Owner = site.Owner;
+                file.UID = site.UID;
                 file.Goodwill = GoodwillManager.GetSiteGoodwill(client, site);
                 file.Type = site.Type;
-                file.FactionFile = site.FactionFile;
+                file.File = site.File;
 
                 tempList.Add(file);
             }

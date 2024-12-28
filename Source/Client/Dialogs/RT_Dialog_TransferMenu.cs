@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GameClient.Managers;
+using GameClient.Scribers;
+using GameClient.Values;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -8,7 +11,7 @@ using Verse;
 using Verse.Sound;
 using static Shared.CommonEnumerators;
 
-namespace GameClient
+namespace GameClient.Dialogs
 {
     public class RT_Dialog_TransferMenu : Window
     {
@@ -60,7 +63,7 @@ namespace GameClient
             forcePause = true;
             absorbInputAroundWindow = true;
             soundAppear = SoundDefOf.CommsWindow_Open;
-            
+
             closeOnAccept = false;
             closeOnCancel = false;
 
@@ -83,16 +86,16 @@ namespace GameClient
             float windowDescriptionDif = Text.CalcSize(description).y + 8;
 
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect((rect.width / 2) - Text.CalcSize(title).x / 2, rect.y, rect.width, Text.CalcSize(title).y), title);
+            Widgets.Label(new Rect(rect.width / 2 - Text.CalcSize(title).x / 2, rect.y, rect.width, Text.CalcSize(title).y), title);
 
             Text.Font = GameFont.Small;
-            Widgets.Label(new Rect((rect.width / 2) - Text.CalcSize(description).x / 2, windowDescriptionDif, rect.width, Text.CalcSize(description).y), description);
+            Widgets.Label(new Rect(rect.width / 2 - Text.CalcSize(description).x / 2, windowDescriptionDif, rect.width, Text.CalcSize(description).y), description);
             Text.Font = GameFont.Medium;
 
             FillMainRect(new Rect(0f, 55f, rect.width, rect.height - buttonY - 65));
 
             if (Widgets.ButtonText(new Rect(new Vector2(rect.x, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Accept")) OnAccept();
-            if (Widgets.ButtonText(new Rect(new Vector2((rect.width / 2) - (buttonX / 2), rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Reset")) OnReset();
+            if (Widgets.ButtonText(new Rect(new Vector2(rect.width / 2 - buttonX / 2, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Reset")) OnReset();
             if (Widgets.ButtonText(new Rect(new Vector2(rect.xMax - buttonX, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Cancel")) OnCancel();
         }
 
@@ -101,7 +104,7 @@ namespace GameClient
             Widgets.DrawLineHorizontal(mainRect.x, mainRect.y - 1, mainRect.width);
             Widgets.DrawLineHorizontal(mainRect.x, mainRect.yMax + 1, mainRect.width);
 
-            float height = 6f + (float)cachedTradeables.Count * 30f;
+            float height = 6f + cachedTradeables.Count * 30f;
             Rect viewRect = new Rect(0f, 0f, mainRect.width - 16f, height);
             Widgets.BeginScrollView(mainRect, ref scrollPosition, viewRect);
             float num = 0;
@@ -224,7 +227,7 @@ namespace GameClient
 
             else if (transferLocation == TransferLocation.Settlement)
             {
-                TradeSession.SetupWith(Find.WorldObjects.SettlementAt(SessionValues.incomingManifest._fromTile), 
+                TradeSession.SetupWith(Find.WorldObjects.SettlementAt(SessionValues.incomingManifest._fromTile),
                     playerNegotiator, true);
             }
         }
@@ -332,7 +335,7 @@ namespace GameClient
 
                 if (allowItems)
                 {
-                    foreach(Thing thing in thingsInMap)
+                    foreach (Thing thing in thingsInMap)
                     {
                         if (thing.MarketValue == 0 && !allowFreeThings) continue;
                         {
@@ -377,11 +380,12 @@ namespace GameClient
 
         public void LoadAllAvailableTradeables()
         {
-            cachedTradeables = (from tr in SessionValues.listToShowInTradesMenu 
-                orderby 0 descending select tr)
-                .ThenBy((Tradeable tr) => tr.ThingDef.label)
-                .ThenBy((Tradeable tr) => tr.AnyThing.TryGetQuality(out QualityCategory qc) ? ((int)qc) : (-1))
-                .ThenBy((Tradeable tr) => tr.AnyThing.HitPoints)
+            cachedTradeables = (from tr in SessionValues.listToShowInTradesMenu
+                                orderby 0 descending
+                                select tr)
+                .ThenBy((tr) => tr.ThingDef.label)
+                .ThenBy((tr) => tr.AnyThing.TryGetQuality(out QualityCategory qc) ? (int)qc : -1)
+                .ThenBy((tr) => tr.AnyThing.HitPoints)
                 .ToList();
         }
     }

@@ -1,6 +1,4 @@
-using static Shared.CommonEnumerators;
-
-namespace Shared 
+namespace Shared
 {
     public class PollutionData 
     {

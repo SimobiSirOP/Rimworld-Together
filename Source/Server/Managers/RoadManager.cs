@@ -1,7 +1,10 @@
-﻿using Shared;
+﻿using GameServer.Core;
+using GameServer.Misc;
+using GameServer.TCP;
+using Shared;
 using static Shared.CommonEnumerators;
 
-namespace GameServer
+namespace GameServer.Managers
 {
     public static class RoadManager
     {
@@ -9,7 +12,7 @@ namespace GameServer
 
         public static void ParsePacket(ServerClient client, Packet packet)
         {
-            if (!Master.actionValues.EnableRoads)
+            if (!Master.actionConfigs.EnableRoads)
             {
                 ResponseShortcutManager.SendIllegalPacket(client, "Tried to use disabled feature!");
                 return;
@@ -83,10 +86,9 @@ namespace GameServer
             currentRoads.Add(details);
 
             Master.worldValues.Roads = currentRoads.ToArray();
-            Main_.SaveValueFile(ServerFileMode.World);
+            Main_.SaveValueFile(ServerFileMode.World, false);
 
-            if (client != null) Logger.Warning($"[Added road from tiles '{details.fromTile}' to '{details.toTile}'] > {client.userFile.Username}");
-            else Logger.Warning($"[Added road from tiles '{details.fromTile}' to '{details.toTile}']");
+            InformationDisplayer.DisplayAddRoad(details.fromTile.ToString(), details.toTile.ToString());
         }
 
         private static void DeleteRoad(RoadDetails details, ServerClient client = null)
@@ -95,10 +97,9 @@ namespace GameServer
             currentRoads.Remove(details);
 
             Master.worldValues.Roads = currentRoads.ToArray();
-            Main_.SaveValueFile(ServerFileMode.World);
+            Main_.SaveValueFile(ServerFileMode.World, false);
 
-            if (client != null) Logger.Warning($"[Removed road from tiles '{details.fromTile}' to '{details.toTile}'] > {client.userFile.Username}");
-            else Logger.Warning($"[Removed road from tiles '{details.fromTile}' to '{details.toTile}']");
+            InformationDisplayer.DisplayRemoveRoad(details.fromTile.ToString(), details.toTile.ToString());
         }
     }
 
