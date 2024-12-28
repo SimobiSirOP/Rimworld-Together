@@ -26,6 +26,10 @@ namespace GameClient
                 case SettlementStepMode.Remove:
                     RemoveSingleSettlement(settlementData._settlementData);
                     break;
+                
+                case SettlementStepMode.Rename:
+                    RenameSingleSettlement(settlementData._settlementData);
+                    break;
             }
         }
 
@@ -57,7 +61,7 @@ namespace GameClient
                 {
                     Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
                     settlement.Tile = toAdd.Tile;
-                    settlement.Name = $"{toAdd.Owner}'s settlement";
+                    settlement.Name = toAdd.Name != null ? $"{toAdd.Owner}'s settlement" : toAdd.Name;
                     settlement.SetFaction(PlanetManagerHelper.GetPlayerFactionFromGoodwill(toAdd.Goodwill));
 
                     playerSettlements.Add(settlement);
@@ -65,6 +69,21 @@ namespace GameClient
                 }
                 catch (Exception e) { Logger.Error($"Failed to spawn settlement at {toAdd.Tile}. Reason: {e}"); }
             }
+        }
+
+        public static void RenameSingleSettlement(SettlementFile toRename)
+        {
+            Logger.Message($"Renamed {toRename.Tile} to {toRename.Name}");
+            {
+                try
+                {
+                    Settlement toGet = Find.WorldObjects.Settlements.Find(fetch =>
+                        fetch.Tile == toRename.Tile && FactionValues.playerFactions.Contains(fetch.Faction));
+                    toGet.Name = toRename.Name;
+                }
+                catch (Exception e) {Logger.Error($"Failed to rename settlement at {toRename.Tile}. Reason: {e}");}
+            }
+
         }
 
         public static void RemoveSingleSettlement(SettlementFile toRemove)
@@ -88,6 +107,17 @@ namespace GameClient
             settlementData._settlementData.Tile = settlementTile;
             settlementData._stepMode = SettlementStepMode.Add;
 
+            Packet packet = Packet.CreatePacketFromObject(nameof(PlayerSettlementManager), settlementData);
+            Network.listener.EnqueuePacket(packet);
+        }
+
+        public static void SendNewSettlementName(int settlementTile, string settlementName)
+        {
+            PlayerSettlementData settlementData = new PlayerSettlementData();
+            settlementData._settlementData.Tile = settlementTile;
+            settlementData._settlementData.Name = settlementName;
+            settlementData._stepMode = SettlementStepMode.Rename;
+            
             Packet packet = Packet.CreatePacketFromObject(nameof(PlayerSettlementManager), settlementData);
             Network.listener.EnqueuePacket(packet);
         }

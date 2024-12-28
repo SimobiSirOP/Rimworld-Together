@@ -1,7 +1,12 @@
-﻿using HarmonyLib;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
+using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
 using Shared;
+using Steamworks;
 using Verse;
 using static Shared.CommonEnumerators;
 
@@ -110,6 +115,16 @@ namespace GameClient
                     else if (FactionValues.playerFactions.Contains(__instance.Faction)) return;
                     else if (NPCSettlementManagerHelper.lastRemovedSettlement != __instance) NPCSettlementManager.RequestSettlementRemoval(__instance);
                 }
+            }
+        }
+        [HarmonyPatch(typeof(NamePlayerSettlementDialogUtility), nameof(NamePlayerSettlementDialogUtility.Named))]
+        public static class RenameSettlementPatch
+        {
+            [HarmonyPostfix]
+            public static void DoPost(Settlement factionBase, string s)
+            {
+                if (Network.state == ClientNetworkState.Disconnected) return;
+                PlayerSettlementManager.SendNewSettlementName(factionBase.Tile, s);
             }
         }
 

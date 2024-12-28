@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
@@ -579,6 +581,51 @@ namespace GameClient
             foreach (Gizmo g in removeList) gizmoList.Remove(g);
 
             __result = gizmoList;
+        }
+    }
+
+    [HarmonyPatch(typeof(Settlement))]
+    public static class SettlementPatch
+    {
+        
+    }
+    
+    [HarmonyPatch(typeof(CellInspectorDrawer), "DrawWorldInspector")]
+    public static class SettlementDescriptionPatch
+    {
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, Se)
+        {
+            //Finding Faction_Label to find a place for new DrawRow)
+            int indexOfFactionLabel = -1;
+            var codes = new List<CodeInstruction>(instructions);
+
+            if (Network.state == ClientNetworkState.Disconnected && FactionValues.playerFactions.Contains()) return codes.AsEnumerable();
+
+            for (var i = 0; i < codes.Count; i++)
+            {
+                var strOperand = codes[i].operand as string;
+                if (strOperand == "Faction_Label")
+                {
+                    indexOfFactionLabel = i;
+                    break;
+                }
+            }
+
+            if (indexOfFactionLabel != -1)
+            {
+                //Finding Pattern Call after Callvirt to delete old DrawRow
+                codes[indexOfFactionLabel].opcode =
+                    OpCodes.Ldstr;
+
+                codes[indexOfFactionLabel].operand = "Owner: ";
+                codes[indexOfFactionLabel + 1].opcode = OpCodes.Nop;
+                codes[indexOfFactionLabel + 2].opcode = OpCodes.Nop;
+                codes[indexOfFactionLabel + 3].opcode = OpCodes.Ldloc_S;
+                codes[indexOfFactionLabel + 3].operand = "";
+            }
+
+            return codes.AsEnumerable();
         }
     }
 }

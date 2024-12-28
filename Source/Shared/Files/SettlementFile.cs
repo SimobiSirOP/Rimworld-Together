@@ -11,5 +11,7 @@ namespace Shared
         public string Owner;
         
         public Goodwill Goodwill;
+
+        public string Name;
     }
 }

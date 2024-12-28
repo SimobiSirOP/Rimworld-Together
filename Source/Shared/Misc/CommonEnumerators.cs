@@ -62,7 +62,7 @@ namespace Shared
 
         public enum SiteStepMode { Accept, Build, Destroy, Info, Config}
 
-        public enum SettlementStepMode { Add, Remove }
+        public enum SettlementStepMode { Add, Remove, Rename }
 
         public enum WorldStepMode { Required, Existing }
 
