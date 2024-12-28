@@ -74,13 +74,13 @@ namespace GameServer.Managers
             }
             if (client != null)
             {
-                SettlementFile settlementFile = GetSettlementFileFromTile(settlementData._settlementData.Tile);
+                SettlementFile settlementFile = GetSettlementFileFromTile(settlementData._settlementFile.Tile);
                 if (settlementFile.UID != client.userFile.Uid)
                     ResponseShortcutManager.SendIllegalPacket(client,
                         $"Settlement at tile {settlementData._settlementFile.Tile} attempted to rename {client.userFile.Uid}, but {settlementData._settlementFile.UID} owns the settlement");
                 else
                 {
-                    settlementFile.Label = settlementData._settlementFile.Label;
+                    settlementFile.Name = settlementData._settlementFile.Name;
                     Serializer.SerializeToFile(Path.Combine(Master.settlementsPath, settlementFile.Tile + fileExtension), settlementFile);
 
                     settlementData._stepMode = SettlementStepMode.Rename;
@@ -95,7 +95,7 @@ namespace GameServer.Managers
                     }
                 }
                 
-                Logger.Message($"[Renamed settlement] > {settlementFile.Tile} > {settlementFile.Name}");
+                Printer.Message($"[Renamed settlement] > {settlementFile.Tile} > {settlementFile.Name}");
             }
         }
 

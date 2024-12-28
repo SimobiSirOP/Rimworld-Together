@@ -76,7 +76,7 @@ namespace GameClient.Managers
 
         public static void RenameSingleSettlement(SettlementFile toRename)
         {
-            Logger.Message($"Renamed {toRename.Tile} to {toRename.Name}");
+            Printer.Message($"Renamed {toRename.Tile} to {toRename.Name}");
             {
                 try
                 {
@@ -84,7 +84,7 @@ namespace GameClient.Managers
                         fetch.Tile == toRename.Tile && FactionValues.playerFactions.Contains(fetch.Faction));
                     toGet.Name = toRename.Name;
                 }
-                catch (Exception e) {Logger.Error($"Failed to rename settlement at {toRename.Tile}. Reason: {e}");}
+                catch (Exception e) {Printer.Error($"Failed to rename settlement at {toRename.Tile}. Reason: {e}");}
             }
 
         }
@@ -117,8 +117,8 @@ namespace GameClient.Managers
         public static void SendNewSettlementName(int settlementTile, string settlementName)
         {
             PlayerSettlementData settlementData = new PlayerSettlementData();
-            settlementData._settlementData.Tile = settlementTile;
-            settlementData._settlementData.Name = settlementName;
+            settlementData._settlementFile.Tile = settlementTile;
+            settlementData._settlementFile.Name = settlementName;
             settlementData._stepMode = SettlementStepMode.Rename;
             
             Packet packet = Packet.CreatePacketFromObject(nameof(PlayerSettlementManager), settlementData);
