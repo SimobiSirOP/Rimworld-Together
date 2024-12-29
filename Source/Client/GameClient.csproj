@@ -26,9 +26,5 @@
 		</Reference>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Compile Remove="Files\PlayerSettlement.cs" />
-	</ItemGroup>
-
 	<Import Project="..\Shared\Shared.projitems" Label="Shared" />
 </Project>

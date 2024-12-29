@@ -5,11 +5,13 @@ using GameClient.Managers;
 using GameClient.TCP;
 using System.Reflection.Emit;
 using GameClient.Dialogs;
+using GameClient.Files;
 using GameClient.Patches.Tabs;
 using GameClient.Values;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
+using Shared;
 using UnityEngine;
 using Verse;
 using static Shared.CommonEnumerators;
@@ -605,49 +607,41 @@ namespace GameClient.Patches.Pages
             __result = gizmoList;
         }
     }
-
-    [HarmonyPatch(typeof(Settlement))]
-    public static class SettlementPatch
-    {
-        
-    }
     
     [HarmonyPatch(typeof(CellInspectorDrawer), "DrawWorldInspector")]
-    public static class SettlementDescriptionPatch
+    internal static class SettlementDescriptionPatch
     {
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, Se)
+        [HarmonyPrefix]
+        public static bool DoPre()
         {
-            //Finding Faction_Label to find a place for new DrawRow)
-            int indexOfFactionLabel = -1;
-            var codes = new List<CodeInstruction>(instructions);
-
-            if (Network.state == ClientNetworkState.Disconnected && FactionValues.playerFactions.Contains()) return codes.AsEnumerable();
-
-            for (var i = 0; i < codes.Count; i++)
+            List<WorldObject> worldObjectList = GenWorldUI.WorldObjectsUnderMouse(UI.MousePositionOnUI);
+            int num1 = GenWorld.MouseTile();
+            Tile tile = Find.WorldGrid[num1];
+            foreach (WorldObject worldObject in worldObjectList)
             {
-                var strOperand = codes[i].operand as string;
-                if (strOperand == "Faction_Label")
+                switch (worldObject)
                 {
-                    indexOfFactionLabel = i;
-                    break;
+                    case PlayerSettlement settlement2 when FactionValues.playerFactions.Contains(settlement2.Faction) &&
+                                                           settlement2 != null:
+                        DrawRow((string)"Owner: ", settlement2.Owner);
+                        if (settlement2.Faction != Faction.OfPlayer)
+                        {
+                            if (settlement2.Faction.Hidden)
+                            {
+                                DrawRow((string)"Relationship_Label".Translate(),
+                                    settlement2.Faction.PlayerRelationKind.GetLabelCap());
+                                break;
+                            }
+                        }
+                        return false;
                 }
             }
+            return true;
+        }
 
-            if (indexOfFactionLabel != -1)
-            {
-                //Finding Pattern Call after Callvirt to delete old DrawRow
-                codes[indexOfFactionLabel].opcode =
-                    OpCodes.Ldstr;
-
-                codes[indexOfFactionLabel].operand = "Owner: ";
-                codes[indexOfFactionLabel + 1].opcode = OpCodes.Nop;
-                codes[indexOfFactionLabel + 2].opcode = OpCodes.Nop;
-                codes[indexOfFactionLabel + 3].opcode = OpCodes.Ldloc_S;
-                codes[indexOfFactionLabel + 3].operand = "";
-            }
-
-            return codes.AsEnumerable();
+        static void DrawRow(string label, string info)
+        {
+            Traverse.Create(typeof(CellInspectorDrawer)).Method("DrawRow", new object[] { label, info });
         }
     }
 }

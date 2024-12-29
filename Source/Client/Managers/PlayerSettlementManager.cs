@@ -3,6 +3,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GameClient.Files;
 using Verse;
 using Shared;
 using static Shared.CommonEnumerators;
@@ -31,7 +32,7 @@ namespace GameClient.Managers
                     break;
                 
                 case SettlementStepMode.Rename:
-                    RenameSingleSettlement(settlementData._settlementData);
+                    RenameSingleSettlement(settlementData._settlementFile);
                     break;
             }
         }
@@ -62,9 +63,11 @@ namespace GameClient.Managers
             {
                 try
                 {
-                    Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
+                    Settlement settlement = (Settlement) WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
                     settlement.Tile = toAdd.Tile;
                     settlement.Name = toAdd.Name != null ? $"{toAdd.Label}'s settlement" : toAdd.Name;
+                    settlement.UID = toAdd.UID;
+                    settlement.Owner = toAdd.Label;
                     settlement.SetFaction(PlanetManagerHelper.GetPlayerFactionFromGoodwill(toAdd.Goodwill));
 
                     playerSettlements.Add(settlement);
