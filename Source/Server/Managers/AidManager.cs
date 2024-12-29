@@ -5,6 +5,7 @@ using static Shared.CommonEnumerators;
 
 namespace GameServer.Managers
 {
+    [RTManager]
     public static class AidManager
     {
         public static void ParsePacket(ServerClient client, Packet packet)

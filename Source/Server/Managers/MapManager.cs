@@ -5,6 +5,7 @@ using Shared;
 
 namespace GameServer.Managers
 {
+    [RTManager]
     public static class MapManager
     {
         //Variables

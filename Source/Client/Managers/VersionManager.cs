@@ -17,8 +17,8 @@ namespace GameClient.Managers
             DialogManager.PushNewDialog(new RT_Dialog_2Input("Version selection", "Release number", "Password (optional)",
                 delegate
                 {
-                    string downloadPath = Path.Combine(Master.appdataTempFolderPath, "3005289691.zip");
-                    string extractPath = Path.Combine(Master.appdataTempFolderPath, "3005289691");
+                    string downloadPath = Path.Combine(Master.appdataTempVersionPath, "3005289691.zip");
+                    string extractPath = Path.Combine(Master.appdataTempVersionPath, "3005289691");
                     string uri = $"https://github.com/Byte-Nova/Rimworld-Together/releases/download/{DialogManager.dialog2ResultOne}/3005289691.zip";
 
                     if (!DownloadVersion(uri, downloadPath))
@@ -70,7 +70,7 @@ namespace GameClient.Managers
             {
                 if (Directory.Exists(extractPath)) Directory.Delete(extractPath, true);
 
-                string appPath = Path.Combine(Master.modAddonsFolderPath, "7z", "7z.exe");
+                string appPath = Path.Combine(Master.modAddonsPath, "7z", "7z.exe");
                 StartCMDWindow($"\"\"{appPath}\" x \"{downloadPath}\" -p\"{DialogManager.dialog2ResultTwo}\" -o\"{extractPath}\"");
 
                 return true;
@@ -82,7 +82,7 @@ namespace GameClient.Managers
         {
             try
             {
-                string modsDirectory = Directory.GetParent(Master.modMainFolderPath).ToString();
+                string modsDirectory = Directory.GetParent(Master.modMainPath).ToString();
                 string installDirectory = Path.Combine(modsDirectory, "3005289691");
 
                 StartCMDWindow($"rmdir \"{installDirectory}\" /s /q");

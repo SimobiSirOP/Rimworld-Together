@@ -5,6 +5,7 @@ using static Shared.CommonEnumerators;
 
 namespace GameServer.Managers
 {
+    [RTManager]
     public static class ResponseShortcutManager
     {
         public static void SendIllegalPacket(ServerClient client, string message, bool shouldBroadcast = true)

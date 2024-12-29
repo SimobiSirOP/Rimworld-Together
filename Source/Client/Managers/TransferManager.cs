@@ -17,7 +17,7 @@ using static Shared.CommonEnumerators;
 namespace GameClient.Managers
 {
     //Class that handles all the thing transfers between clients in the mod
-
+    [RTManager]
     public static class TransferManager
     {
         //Parses the packet into useful orders

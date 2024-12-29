@@ -42,7 +42,7 @@ namespace GameClient.Core.Configs
             listingStandard.GapLine();
             listingStandard.Label("Debugging");
             if (listingStandard.ButtonTextLabeled("Verbosity mode", $"{ClientValues.currentVerboseMode}")) ShowVerboseFloatMenu();
-            if (listingStandard.ButtonTextLabeled("Open logs folder", "Open")) StartProcess(Master.appdataFolderPath);
+            if (listingStandard.ButtonTextLabeled("Open logs folder", "Open")) StartProcess(Master.appdataPath);
             if (listingStandard.ButtonTextLabeled("Convert save for server use", "Convert")) { ShowConvertSaveFloatMenu(); }
 
             listingStandard.GapLine();
@@ -132,7 +132,7 @@ namespace GameClient.Core.Configs
                     string toConvertPath = str;
                     string conversionPath = str.Replace(".rws", ".mpsave");
 
-                    byte[] compressedBytes = GZip.Compress(File.ReadAllBytes(toConvertPath));
+                    byte[] compressedBytes = GZip.CompressBytes(File.ReadAllBytes(toConvertPath));
                     File.WriteAllBytes(conversionPath, compressedBytes);
 
                     RT_Dialog_OK d2 = new RT_Dialog_OK("Save was converted successfully");

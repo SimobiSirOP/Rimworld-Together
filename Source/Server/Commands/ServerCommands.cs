@@ -238,7 +238,7 @@ namespace GameServer.Commands
             Printer.Title("----------------------------------------");
             foreach (ServerClient client in NetworkHelper.GetConnectedClientsSafe())
             {
-                Printer.Warning($"{client.userFile.Label} - {client.userFile.SavedIP} - {client.userFile.Uid}");
+                Printer.Warning($"{client.userFile.SavedIP} - {client.userFile.Label} - {client.userFile.Uid}");
             }
             Printer.Title("----------------------------------------");
         }

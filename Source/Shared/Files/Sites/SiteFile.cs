@@ -4,17 +4,17 @@ using static Shared.CommonEnumerators;
 
 namespace Shared
 {
-    public class SiteIdendityFile
+    public class SiteFile
     {
         public int Tile;
 
         public string UID;
 
+        public string GuildName;
+
         public Goodwill Goodwill;
 
         public SiteInfoFile Type = new SiteInfoFile();
-
-        public GuildFile File;
 
         [NonSerialized] public Semaphore SavingSemaphore = new Semaphore(1, 1);
     }

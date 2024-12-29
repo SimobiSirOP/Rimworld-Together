@@ -60,7 +60,7 @@ namespace Shared
 
         public enum CreationType { Human, Animal, Corpse, Thing }
 
-        public enum SiteStepMode { Accept, Build, Destroy, Info, Config}
+        public enum SiteStepMode { Accept, Build, Destroy, Info, Config, Rewards}
 
         public enum SettlementStepMode { Add, Remove, Rename}
 

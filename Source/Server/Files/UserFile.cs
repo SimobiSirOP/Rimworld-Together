@@ -22,11 +22,13 @@ namespace GameServer.Files
 
         public double AidProtectionTime;
 
+        public string GuildName;
+
         public string[] RunningMods;
 
-        public UserRelationshipsFile Relationships = new UserRelationshipsFile();
+        public List<string> AllyPlayers = new List<string>();
 
-        public GuildFile GuildFile;
+        public List<string> EnemyPlayers = new List<string>();
 
         public SiteConfigFile[] SiteConfigs = Array.Empty<SiteConfigFile>();
 
@@ -42,7 +44,8 @@ namespace GameServer.Files
 
         public void UpdateFaction(GuildFile toUpdateWith)
         {
-            GuildFile = toUpdateWith;
+            if (toUpdateWith == null) GuildName = null;
+            else GuildName = toUpdateWith.Name;
 
             UserManagerH.SaveUserFile(this);
         }

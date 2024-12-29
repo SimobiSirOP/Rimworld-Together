@@ -8,6 +8,7 @@ using static Shared.CommonEnumerators;
 
 namespace GameClient.Managers
 {
+    [RTManager]
     public static class GuildManager
     {
         public static void ParsePacket(Packet packet)

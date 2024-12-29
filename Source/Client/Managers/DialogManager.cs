@@ -3,9 +3,11 @@ using GameClient.Dialogs;
 using GameClient.Values;
 using UnityEngine;
 using Verse;
+using Shared;
 
 namespace GameClient.Managers
 {
+    [RTManager]
     public static class DialogManager
     {
         public static RT_Dialog_Wait dialogWait;

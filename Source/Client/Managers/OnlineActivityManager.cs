@@ -17,6 +17,7 @@ using GameClient.TCP;
 
 namespace GameClient.Managers
 {
+    [RTManager]
     public static class OnlineActivityManager
     {
         public static Map activityMap = new Map();

@@ -13,6 +13,7 @@ using GameClient.TCP;
 
 namespace GameClient.Managers
 {
+    [RTManager]
     public static class PlayerSettlementManager
     {
         public static List<Settlement> playerSettlements = new List<Settlement>();

@@ -6,6 +6,7 @@ using GameClient.Managers;
 using GameClient.Misc;
 using GameClient.Values;
 using RimWorld;
+using RimWorld.Planet;
 using Shared;
 using Verse;
 using static Shared.CommonEnumerators;
@@ -16,9 +17,9 @@ namespace GameClient.Scribers
     {
         public static StringWriter stringWriter;
 
-        private static readonly string scribeTreeName = "Tree";
+        public static readonly string scribeTreeName = "Tree";
 
-        private static readonly string scribeNodeName = "Node";
+        public static readonly string scribeNodeName = "Node";
 
         public static string ThingToScribe(Thing toSave, int customCount = -1)
         {
@@ -41,7 +42,7 @@ namespace GameClient.Scribers
 
             ClientValues.ToggleUsingScriber(false);
 
-            return stringWriter.ToString();
+            return GZip.CompressString(stringWriter.ToString());
         }
 
         public static Thing ScribeToThing(string scribeData, bool hasCustomID)
@@ -52,7 +53,7 @@ namespace GameClient.Scribers
 
             try
             {
-                Scribe.loader.InitLoading(scribeData);
+                Scribe.loader.InitLoading(GZip.DecompressString(scribeData));
 
                 Scribe_Deep.Look(ref toLoad, scribeNodeName);
 
@@ -122,6 +123,52 @@ namespace GameClient.Scribers
         public static Thing StringToThing(ThingFile thingData, bool overrideID = false)
         {
             return RTScriber.ScribeToThing(thingData.ScribeData, overrideID);
+        }
+    }
+
+    // TODO
+    // Find a way to make it usable
+
+    public static class TileScriber
+    {
+        public static string TileToScribe(Tile toSave)
+        {
+            ClientValues.ToggleUsingScriber(true);
+
+            try
+            {
+                Scribe.saver.InitSaving("", RTScriber.scribeTreeName);
+
+                Scribe_Deep.Look(ref toSave, RTScriber.scribeNodeName);
+
+                Scribe.saver.FinalizeSaving();
+            }
+            catch (Exception e) { Printer.Error(e.ToString(), LogImportanceMode.Verbose); };
+
+            ClientValues.ToggleUsingScriber(false);
+
+            return GZip.CompressString(RTScriber.stringWriter.ToString());
+        }
+
+        public static Tile ScribeToTile(string scribeData)
+        {
+            ClientValues.ToggleUsingScriber(true);
+
+            Tile toLoad = null;
+
+            try
+            {
+                Scribe.loader.InitLoading(GZip.DecompressString(scribeData));
+
+                Scribe_Deep.Look(ref toLoad, RTScriber.scribeNodeName);
+
+                Scribe.loader.FinalizeLoading();
+            }
+            catch (Exception e) { Printer.Error(e.ToString(), LogImportanceMode.Verbose); };
+
+            ClientValues.ToggleUsingScriber(false);
+
+            return toLoad;
         }
     }
 

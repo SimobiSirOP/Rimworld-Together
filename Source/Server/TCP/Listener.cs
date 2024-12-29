@@ -118,29 +118,16 @@ namespace GameServer.TCP
             if (!ignoredLogPackets.Contains(packet.header)) InformationDisplayer.DisplayReceivePacket(packet.header, LogImportanceMode.Verbose);
             else InformationDisplayer.DisplayReceivePacket(packet.header, LogImportanceMode.Extreme);
 
-            if (packet.isModded)
-            {
-                if (!MethodManager.TryExecuteModdedMethod(defaultParserMethodName, packet.header, packet.targetPatchName, [targetClient, packet]))
-                {
-                    OnHandleError();
-                }
-            }
-
-            else
-            {
-                if (!MethodManager.TryExecuteMethod(defaultParserMethodName, packet.header, [targetClient, packet]))
-                {
-                    OnHandleError();
-                }
-            }
+            try { Master.managerDictionary[packet.header].Invoke(null, new object[] { targetClient, packet }); }
+            catch (Exception ex) { OnHandleError(ex); }
 
             // If method manager failed to execute the packet we assume corrupted data
 
-            void OnHandleError()
+            void OnHandleError(Exception ex)
             {
                 Printer.Error($"Error while trying to execute method from type '{packet.header}'");
                 Printer.Error("Forcefully disconnecting due to MethodManager exception");
-                Printer.Error(MethodManager.latestException);
+                Printer.Error(ex.ToString());
                 disconnectFlag = true;
             }
         }

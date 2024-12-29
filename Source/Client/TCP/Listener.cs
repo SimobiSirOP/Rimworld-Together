@@ -117,36 +117,19 @@ namespace GameClient.TCP
             if (!ignoredLogPackets.Contains(packet.header)) Printer.Message($"[Packet] > {packet.header}", LogImportanceMode.Verbose);
             else Printer.Message($"[Packet] > {packet.header}", LogImportanceMode.Extreme);
 
-            Action toDo;
-            if (packet.isModded)
+            Action toDo = delegate
             {
-                toDo = delegate
-                {
-                    if (!MethodManager.TryExecuteModdedMethod(defaultParserMethodName, packet.header, packet.targetPatchName, new object[] { packet }))
-                    {
-                        OnHandleError();
-                    }
-                };
-            }
-
-            else
-            {
-                toDo = delegate
-                {
-                    if (!MethodManager.TryExecuteMethod(defaultParserMethodName, packet.header, new object[] { packet }))
-                    {
-                        OnHandleError();
-                    }
-                };
-            }
+                try { Master.managerDictionary[packet.header].Invoke(null, new object[] { packet }); }
+                catch (Exception ex) { OnHandleError(ex); }
+            };
 
             // If method manager failed to execute the packet we assume corrupted data
 
-            void OnHandleError()
+            void OnHandleError(Exception ex)
             {
                 Printer.Error($"Error while trying to execute method from type '{packet.header}'");
                 Printer.Error("Forcefully disconnecting due to MethodManager exception");
-                Printer.Error(MethodManager.latestException);
+                Printer.Error(ex.ToString());
                 disconnectFlag = true;
             }
 

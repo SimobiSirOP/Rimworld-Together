@@ -4,6 +4,7 @@ using Shared;
 
 namespace GameServer.Managers
 {
+    [RTManager]
     public static class GlobalDataManager
     {
         public static void SendServerGlobalData(ServerClient client)
@@ -35,7 +36,7 @@ namespace GameServer.Managers
         {
             globalData._isClientAdmin = client.userFile.IsAdmin;
 
-            globalData._isClientFactionMember = client.userFile.GuildFile != null;
+            globalData._isClientFactionMember = !string.IsNullOrEmpty(client.userFile.GuildName);
 
             return globalData;
         }
@@ -79,17 +80,17 @@ namespace GameServer.Managers
 
         public static ServerGlobalData GetServerSites(ServerClient client, ServerGlobalData globalData)
         {
-            List<SiteIdendityFile> tempList = new List<SiteIdendityFile>();
-            SiteIdendityFile[] sites = SiteManagerHelper.GetAllSites();
-            foreach (SiteIdendityFile site in sites)
+            List<SiteFile> tempList = new List<SiteFile>();
+            SiteFile[] sites = SiteManagerHelper.GetAllSites();
+            foreach (SiteFile site in sites)
             {
-                SiteIdendityFile file = new SiteIdendityFile();
+                SiteFile file = new SiteFile();
 
                 file.Tile = site.Tile;
                 file.UID = site.UID;
                 file.Goodwill = GoodwillManager.GetSiteGoodwill(client, site);
                 file.Type = site.Type;
-                file.File = site.File;
+                file.GuildName = site.GuildName;
 
                 tempList.Add(file);
             }

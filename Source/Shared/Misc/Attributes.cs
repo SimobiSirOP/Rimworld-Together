@@ -2,7 +2,11 @@ using System;
 
 namespace Shared
 {
-    // Used for loaded assemblies to mark their entry point.
+    // Used for instantiating managers
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class RTStartupAttribute : Attribute {}
+    public class RTManager : Attribute { }
+
+    // Used for loading in custom assemblies
+    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
+    public class RTStartupAttribute : Attribute { }
 }

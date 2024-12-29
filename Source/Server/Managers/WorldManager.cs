@@ -5,6 +5,7 @@ using static Shared.CommonEnumerators;
 
 namespace GameServer.Managers
 {
+    [RTManager]
     public static class WorldManager
     {
         private static string worldFileName = "WorldConfig.json";

@@ -25,7 +25,7 @@ namespace Shared
 
         public SettlementFile[] _playerSettlements;
 
-        public SiteIdendityFile[] _playerSites;
+        public SiteFile[] _playerSites;
 
         public CaravanFile[] _playerCaravans;
 

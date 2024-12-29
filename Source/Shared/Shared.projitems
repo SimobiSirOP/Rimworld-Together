@@ -23,12 +23,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Files\ModConfigFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Files\SettlementFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Files\Sites\SiteConfigFile.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Files\Sites\SiteIdendityFile.cs" />
+    <Compile Include="..\Shared\Files\Sites\SiteFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Files\Sites\SiteInfoFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Files\Sites\SiteRewardFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Files\ThingFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Files\Values\*.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Managers\*.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\*.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Network\*.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PacketData\*.cs" />

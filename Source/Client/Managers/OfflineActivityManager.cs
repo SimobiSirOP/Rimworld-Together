@@ -13,6 +13,7 @@ using GameClient.TCP;
 
 namespace GameClient.Managers
 {
+    [RTManager]
     public static class OfflineActivityManager
     {
         public static void ParsePacket(Packet packet)

@@ -1,9 +1,11 @@
+using Shared;
 ﻿using GameServer.Core;
 using GameServer.Misc;
 using static Shared.CommonEnumerators;
 
 namespace GameServer.Managers
 {
+    [RTManager]
     public static class WhitelistManager
     {
         public static void AddUserToWhitelist(string username)

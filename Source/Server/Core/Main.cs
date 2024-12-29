@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Reflection;
 using GameServer.Core.Configs;
 using GameServer.Managers;
 using GameServer.Managers.External;
@@ -19,6 +20,8 @@ namespace GameServer.Core
             SetCulture();
             LoadResources();
             ChangeTitle();
+            LoadAllManagers();
+            CompatibilityManager.LoadAllPatches();
 
             Printer.Title($"----------------------------------------");
 
@@ -35,8 +38,8 @@ namespace GameServer.Core
         public static void SetPaths()
         {
             Master.mainPath = Directory.GetCurrentDirectory();
-
             Master.configsPath = Path.Combine(Master.mainPath, "Configs");
+            Master.tempPath = Path.Combine(Master.mainPath, "Temp");
 
             Master.assetsPath = Path.Combine(Master.mainPath, "Assets");
             Master.mapsPath = Path.Combine(Master.assetsPath, "Maps");
@@ -61,6 +64,7 @@ namespace GameServer.Core
             if (!Directory.Exists(Master.configsPath)) Directory.CreateDirectory(Master.configsPath);
             if (!Directory.Exists(Master.logsPath)) Directory.CreateDirectory(Master.logsPath);
             if (!Directory.Exists(Master.backupsPath)) Directory.CreateDirectory(Master.backupsPath);
+            if (!Directory.Exists(Master.tempPath)) Directory.CreateDirectory(Master.tempPath);
 
             if (!Directory.Exists(Master.usersPath)) Directory.CreateDirectory(Master.usersPath);
             if (!Directory.Exists(Master.savesPath)) Directory.CreateDirectory(Master.savesPath);
@@ -128,7 +132,6 @@ namespace GameServer.Core
 
             EventManager.LoadEvents();
 
-            CompatibilityManager.LoadAllPatchedAssemblies();
         }
 
         public static void SaveValueFile(ServerFileMode mode, bool broadcast = true)
@@ -317,6 +320,18 @@ namespace GameServer.Core
         {
             Console.Title = $"RimWorld Together {CommonValues.executableVersion} - " +
                 $"Players [{NetworkHelper.GetConnectedClientsSafe().Length}/{Master.serverConfig.MaxPlayers}]";
+        }
+
+        public static void LoadAllManagers()
+        {
+            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
+            {
+                if (type.GetCustomAttributes(typeof(RTManager), false).Length != 0)
+                {
+                    try { Master.managerDictionary[type.Name] = type.GetMethod("ParsePacket"); }
+                    catch (Exception exception) { Printer.Error($"{type.Name} failed to load\n{exception}"); }
+                }
+            }
         }
     }
 }

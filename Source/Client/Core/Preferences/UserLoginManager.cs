@@ -21,16 +21,12 @@ namespace GameClient.Core.Preferences
         {
             // For testing purposes
 
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKey(KeyCode.LeftShift)) return GetTestingLoginFile();
+            else
             {
-                LoginDataFile file = new LoginDataFile();
-                file.UID = "UID";
-                file.Username = "Username";
-                return file;
+                if (File.Exists(Master.loginDataPath)) return Serializer.SerializeFromFile<LoginDataFile>(Master.loginDataPath);
+                else return new LoginDataFile();
             }
-
-            if (File.Exists(Master.loginDataPath)) return Serializer.SerializeFromFile<LoginDataFile>(Master.loginDataPath);
-            else return new LoginDataFile();
         }
 
         public static void DeleteLoginData() { File.Delete(Master.loginDataPath); }
@@ -53,6 +49,14 @@ namespace GameClient.Core.Preferences
                 Packet packet = Packet.CreatePacketFromObject(nameof(LoginManager), data);
                 Network.listener.EnqueuePacket(packet);
             }
+        }
+
+        private static LoginDataFile GetTestingLoginFile()
+        {
+            LoginDataFile file = new LoginDataFile();
+            file.UID = "UID";
+            file.Username = "Username";
+            return file;
         }
 
         public static void PromptCreateAccount(bool isQuickConnect)

@@ -1,4 +1,5 @@
 using System.Linq;
+using Shared;
 using GameClient.Core.Preferences;
 using GameClient.Dialogs;
 using GameClient.Files;
@@ -7,6 +8,7 @@ using GameClient.TCP;
 
 namespace GameClient.Managers
 {
+    [RTManager]
     public static class ConnectionManager
     {
         public static void ShowConnectDialogs()

@@ -6,6 +6,7 @@ using static Shared.CommonEnumerators;
 
 namespace GameServer.Managers
 {
+    [RTManager]
     public static class BackupManager
     {
         public static readonly string fileExtension = ".zip";
@@ -80,8 +81,8 @@ namespace GameServer.Managers
                 string userSavePath = Path.Combine(Master.savesPath, uid + SaveManager.fileExtension);
                 if (File.Exists(userSavePath)) toArchive.Add(userSavePath);
 
-                SiteIdendityFile[] playerSites = SiteManagerHelper.GetAllSitesFromUID(uid);
-                foreach (SiteIdendityFile site in playerSites) toArchive.Add(Path.Combine(Master.sitesPath, site.Tile + SiteManagerHelper.fileExtension));
+                SiteFile[] playerSites = SiteManagerHelper.GetAllSitesFromUID(uid);
+                foreach (SiteFile site in playerSites) toArchive.Add(Path.Combine(Master.sitesPath, site.Tile + SiteManagerHelper.fileExtension));
 
                 SettlementFile[] playerSettlements = PlayerSettlementManager.GetAllSettlementsFromUsername(uid);
                 foreach (SettlementFile settlementFile in playerSettlements) toArchive.Add(Path.Combine(Master.settlementsPath, settlementFile.Tile + PlayerSettlementManager.fileExtension));

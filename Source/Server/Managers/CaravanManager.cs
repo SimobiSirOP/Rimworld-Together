@@ -6,6 +6,7 @@ using static Shared.CommonEnumerators;
 
 namespace GameServer.Managers
 {
+    [RTManager]
     public static class CaravanManager
     {
         //Variables

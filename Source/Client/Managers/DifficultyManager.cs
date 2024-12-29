@@ -5,6 +5,7 @@ using Verse;
 
 namespace GameClient.Managers
 {
+    [RTManager]
     public static class DifficultyManager
     {
         public static DifficultyValuesFile difficultyValues;

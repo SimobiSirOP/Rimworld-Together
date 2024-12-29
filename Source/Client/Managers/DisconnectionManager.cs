@@ -1,12 +1,14 @@
+
+using Verse;
+using Shared;
 ﻿using GameClient.Dialogs;
 using GameClient.Misc;
 using GameClient.Values;
-using Verse;
 
 namespace GameClient.Managers
 {
     //Class that contains all the disconnection functions that the mod uses
-
+    [RTManager]
     public static class DisconnectionManager
     {
         //Useful disconnection variables

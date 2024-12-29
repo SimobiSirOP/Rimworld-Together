@@ -12,6 +12,7 @@ using GameClient.TCP;
 
 namespace GameClient.Managers
 {
+    [RTManager]
     public static class NPCSettlementManager
     {
         public static void ParsePacket(Packet packet)

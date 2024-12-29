@@ -30,13 +30,13 @@ namespace Shared
                 serializer.Serialize(writer, toConvert); 
             }
 
-            if (compression) return GZip.Compress(memoryStream.ToArray());
+            if (compression) return GZip.CompressBytes(memoryStream.ToArray());
             else return memoryStream.ToArray();
         }
 
         public static T ConvertBytesToObject<T>(byte[] bytes, bool compression = true)
         {
-            if (compression) bytes = GZip.Decompress(bytes);
+            if (compression) bytes = GZip.DecompressBytes(bytes);
 
             JsonSerializer serializer = JsonSerializer.Create(DefaultSettings);
             MemoryStream memoryStream = new MemoryStream(bytes);

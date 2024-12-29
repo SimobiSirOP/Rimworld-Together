@@ -3,12 +3,13 @@ using System.Linq;
 using GameClient.Values;
 using RimWorld;
 using Verse;
+using Shared;
 using static Shared.CommonEnumerators;
 
 namespace GameClient.Managers
 {
     //Class that handles all the planet functions for the mod
-
+    [RTManager]
     public static class PlanetManager
     {
         //Regenerates the planet of player objects

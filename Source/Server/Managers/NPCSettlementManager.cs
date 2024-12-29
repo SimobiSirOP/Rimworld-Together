@@ -6,6 +6,7 @@ using static Shared.CommonEnumerators;
 
 namespace GameServer.Managers
 {
+    [RTManager]
     public static class NPCSettlementManager
     {
         public static void ParsePacket(ServerClient client, Packet packet)
