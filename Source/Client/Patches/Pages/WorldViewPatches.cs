@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using GameClient.Managers;
 using GameClient.TCP;
 using System.Reflection.Emit;
 using GameClient.Dialogs;
 using GameClient.Files;
+using GameClient.Misc;
 using GameClient.Patches.Tabs;
 using GameClient.Values;
 using HarmonyLib;
@@ -609,39 +611,31 @@ namespace GameClient.Patches.Pages
     }
     
     [HarmonyPatch(typeof(CellInspectorDrawer), "DrawWorldInspector")]
-    internal static class SettlementDescriptionPatch
+    public static class SettlementInspectorPatch
     {
-        [HarmonyPrefix]
-        public static bool DoPre()
+        [HarmonyPostfix]
+        public static void DoPost()
         {
+            string label = "Owner: ";
+            string info = "Test";
             List<WorldObject> worldObjectList = GenWorldUI.WorldObjectsUnderMouse(UI.MousePositionOnUI);
             int num1 = GenWorld.MouseTile();
-            Tile tile = Find.WorldGrid[num1];
             foreach (WorldObject worldObject in worldObjectList)
             {
-                switch (worldObject)
-                {
-                    case PlayerSettlement settlement2 when FactionValues.playerFactions.Contains(settlement2.Faction) &&
-                                                           settlement2 != null:
-                        DrawRow((string)"Owner: ", settlement2.Owner);
-                        if (settlement2.Faction != Faction.OfPlayer)
-                        {
-                            if (settlement2.Faction.Hidden)
-                            {
-                                DrawRow((string)"Relationship_Label".Translate(),
-                                    settlement2.Faction.PlayerRelationKind.GetLabelCap());
-                                break;
-                            }
-                        }
-                        return false;
-                }
+                    AccessTools.Method(typeof(CellInspectorDrawer), "DrawRow")
+                        .Invoke(null, new object[] { label, info });
+                    Printer.Error("DrawRow INVOKE");
             }
-            return true;
         }
+    }
 
-        static void DrawRow(string label, string info)
+    [HarmonyPatch(typeof(CellInspectorDrawer), "DrawRow")]
+    public static class DEBUGPATCH
+    {
+        [HarmonyPostfix]
+        public static void DoPost()
         {
-            Traverse.Create(typeof(CellInspectorDrawer)).Method("DrawRow", new object[] { label, info });
+            Printer.Error("DrawRow INVOKED");
         }
     }
 }

@@ -45,7 +45,7 @@ namespace GameClient.Patches.Tabs
 
         private void GenerateList(Rect mainRect)
         {
-            var orderedDictionary = PlayerSettlementManager.playerSettlements.OrderBy(x => x.Name);
+            var orderedDictionary = PlayerSettlementManager.playerSettlements.OrderBy(x => x.settlement.Name);
 
             float height = 6f + orderedDictionary.Count() * 30f;
             Rect viewRect = new Rect(mainRect.x, mainRect.y, mainRect.width - 16f, height);
@@ -57,12 +57,12 @@ namespace GameClient.Patches.Tabs
             float num3 = scrollPosition.y + mainRect.height;
             int num4 = 0;
 
-            foreach (Settlement playerSettlement in orderedDictionary)
+            foreach (PlayerSettlement playerSettlement in orderedDictionary)
             {
                 if (num > num2 && num < num3)
                 {
                     Rect rect = new Rect(0f, mainRect.y + num, viewRect.width, 30f);
-                    DrawCustomRow(rect, playerSettlement, num4);
+                    DrawCustomRow(rect, playerSettlement.settlement, num4);
                 }
 
                 num += 30f;

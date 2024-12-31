@@ -67,6 +67,7 @@ namespace GameServer.Managers
                     file.UID = settlement.UID;
                     file.Label = settlement.Label;
                     file.Goodwill = GoodwillManager.GetSettlementGoodwill(client, settlement);
+                    file.Name= settlement.Name;
 
                     tempList.Add(file);
                 }

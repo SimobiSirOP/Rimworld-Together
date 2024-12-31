@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using GameClient.Managers;
 using GameClient.Misc;
 using GameClient.Scribers;
 using GameClient.TCP;

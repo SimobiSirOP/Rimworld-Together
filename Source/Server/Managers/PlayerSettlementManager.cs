@@ -46,6 +46,9 @@ namespace GameServer.Managers
                 settlementFile.Tile = settlementData._settlementFile.Tile;
                 settlementFile.UID = client.userFile.Uid;
                 settlementFile.Label = client.userFile.Label;
+                settlementFile.Name = settlementData._settlementFile == null
+                    ? $"{settlementData._settlementFile.Label}'s settlement"
+                    : settlementData._settlementFile.Name;
                 Serializer.SerializeToFile(Path.Combine(Master.settlementsPath, settlementFile.Tile + fileExtension), settlementFile);
 
                 settlementData._stepMode = SettlementStepMode.Add;

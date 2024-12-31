@@ -103,15 +103,12 @@ namespace GameClient.Managers
 
             for (int i = 0; i < toChange.Count(); i++)
             {
-                PlayerSettlementManager.playerSettlements.Remove(toChange[i]);
                 Find.WorldObjects.Remove(toChange[i]);
-
                 Settlement newSettlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
                 newSettlement.Tile = toChange[i].Tile;
                 newSettlement.Name = toChange[i].Name;
                 newSettlement.SetFaction(PlanetManagerHelper.GetPlayerFactionFromGoodwill(factionGoodwillData._settlementGoodwills[i]));
-
-                PlayerSettlementManager.playerSettlements.Add(newSettlement);
+                PlayerSettlementManager.playerSettlements.Find(fetch => fetch.settlement.Tile == newSettlement.Tile).settlement = newSettlement;
                 Find.WorldObjects.Add(newSettlement);
             }
         }
