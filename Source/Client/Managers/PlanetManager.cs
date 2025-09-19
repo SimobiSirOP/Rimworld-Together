@@ -86,7 +86,35 @@ namespace GameClient.Managers
 
             return factionToUse;
         }
+        
+        // Returns a goodwill depending on a faction
+        public static Goodwill GetPlayerGoodwillFromFaction(Faction faction)
+        {
+            Goodwill goodwillToUse = Goodwill.Personal;
+            if (ClientValues.EnemyPlayer ==  faction)
+            {
+                goodwillToUse = Goodwill.Enemy;
+            }
+            if (ClientValues.NeutralPlayer ==  faction)
+            {
+                goodwillToUse = Goodwill.Neutral;
+            }
+            if (ClientValues.AllyPlayer ==  faction)
+            {
+                goodwillToUse = Goodwill.Ally;
+            }
+            if (ClientValues.YourOnlineFaction ==  faction)
+            {
+                goodwillToUse = Goodwill.Faction;
+            }
+            if (Faction.OfPlayer ==  faction)
+            {
+                goodwillToUse = Goodwill.Personal;
+            }
 
+            return goodwillToUse;
+        }
+        
         //Returns an npc faction depending on the value
 
         public static List<Faction> GetNPCFactionFromDefName(string defName)

@@ -20,6 +20,7 @@ namespace GameClient.Managers
     [StaticConstructorOnStartup]
     public static class ChatManager
     {
+        //GUI
         public static Vector2 ChatBoxPosition = new Vector2(0, UI.screenHeight - 35f - 600f);
         private static MainButtonDef ChatButtonDef { get; set; } = DefDatabase<MainButtonDef>.GetNamed("Chat");
 
@@ -32,7 +33,12 @@ namespace GameClient.Managers
         public static bool IsChatIconActive { get; set; }
         public static bool ShouldScrollChat { get; set; }
         public static bool ChatAutoscroll = true;
+        
+        //Strings
+        private static readonly string systemName = "CONSOLE";
 
+        private static readonly string notificationName = "SERVER";
+        
         //Chat clock
         private static Task ChatClockTask { get; set; }
         private static Semaphore Semaphore { get; set; } = new Semaphore(1, 1);
@@ -62,6 +68,28 @@ namespace GameClient.Managers
             if (!IsChatTabOpen) ToggleChatIcon(true);
 
             if (hasBeenTagged) ChatSounds.SystemChatDing.PlayOneShotOnCamera();
+
+            if (data._username == "CONSOLE" || data._username == "SERVER") ChatSounds.SystemChatDing.PlayOneShotOnCamera();
+            Goodwill usernameGoodwill = PlanetManagerHelper.GetPlayerGoodwillFromFaction(Find.WorldObjects
+                .AllWorldObjects
+                .First(x => x.Label == data._username).Faction);
+                
+            // Player different sounds depending on goodwill
+            switch (usernameGoodwill)
+            {
+                case Goodwill.Enemy:
+                    ChatSounds.HostileChatDing.PlayOneShotOnCamera();
+                    break;
+                case Goodwill.Neutral:
+                    ChatSounds.NeutralChatDing.PlayOneShotOnCamera();
+                    break;
+                case Goodwill.Ally:
+                    ChatSounds.AllyChatDing.PlayOneShotOnCamera();
+                    break;
+                case Goodwill.Faction:
+                    ChatSounds.AllyChatDing.PlayOneShotOnCamera();
+                    break;
+            }
         }
 
         public static void SendMessage(string messageToSend)
@@ -254,10 +282,7 @@ namespace GameClient.Managers
             ChatManager.ChatIcons.Add(ContentFinder<Texture2D>.Get("UI/ChatIconOff"));
         }
     }
-
-    //TODO
-    //Apply different sounds depending on the message type, since right now only "Own" and "System" play
-
+    
     [DefOf]
     public static class ChatSounds
     {
