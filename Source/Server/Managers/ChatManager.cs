@@ -52,6 +52,7 @@ namespace GameServer.Managers
 
             CommandBase toFind = ChatManagerHelper.GetCommandFromName(command[0]);
             if (toFind == null) SendConsoleMessage(client, "Command was not found.");
+            else if (!toFind.IsAdminOnly) SendConsoleMessage(client, "Unsufficient permissions.");
             else
             {
                 ChatCommandActions.TargetClient = client;

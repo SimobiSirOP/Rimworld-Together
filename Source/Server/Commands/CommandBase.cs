@@ -9,13 +9,17 @@
         public int Parameters { get; private set; }
 
         public Action CommandAction { get; private set; }
+        
+        public bool IsAdminOnly { get; private set; }
 
-        public CommandBase(string prefix, int parameters, string description, Action action)
+        public CommandBase(string prefix, int parameters, string description, Action action, bool isAdminOnly = false)
         {
             this.Prefix = prefix;
             this.Parameters = parameters;
             this.Description = description;
             this.CommandAction = action;
+            this.IsAdminOnly = isAdminOnly;
         }
+        
     }
 }
