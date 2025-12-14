@@ -32,12 +32,12 @@ namespace GameServer.Commands
 
         private static readonly CommandBase KickCommand = new CommandBase("/kick", 0,
             "Kicks player out of the server", KickCommandAction, true);
-        
+
         private static readonly CommandBase BanCommand = new CommandBase("/ban", 0,
             "Bans player", BanCommandAction, true);
 
-        private static readonly CommandBase GiveCommand = new CommandBase("/give", 0,
-            "Gives a Thing to specified player (Syntax: player, ThingDef, amount)", GiveCommandAction, true);
+        private static readonly CommandBase ListCommand = new CommandBase("/list", 0,
+            "Shows a list of all connected players with corresponding UID's", ListCommandAction, true);
 
         public static readonly CommandBase[] commands = new CommandBase[]
         {
@@ -48,7 +48,7 @@ namespace GameServer.Commands
             PMCommand,
             KickCommand,
             BanCommand,
-            
+            ListCommand,
         };
     }
 
@@ -64,12 +64,14 @@ namespace GameServer.Commands
             else
             {
                 List<string> messagesToSend = new List<string> { "List of available commands:" };
-                foreach (CommandBase command in commands.Where(c => !c.IsAdminOnly)) messagesToSend.Add($"{command.Prefix} - {command.Description}");
+                foreach (CommandBase command in commands.Where(c => !c.IsAdminOnly))
+                    messagesToSend.Add($"{command.Prefix} - {command.Description}");
                 if (TargetClient.UserFile.IsAdmin)
                 {
-                    foreach (CommandBase command in commands.Where(c => c.IsAdminOnly)) messagesToSend.Add($"{command.Prefix} - {command.Description}");
+                    foreach (CommandBase command in commands.Where(c => c.IsAdminOnly))
+                        messagesToSend.Add($"{command.Prefix} - {command.Description}");
                 }
-                
+
                 foreach (string str in messagesToSend) ChatManager.SendConsoleMessage(TargetClient, str);
             }
         }
@@ -106,15 +108,18 @@ namespace GameServer.Commands
                 string message = "";
                 for (int i = 2; i < Command.Length; i++) message += Command[i] + " ";
 
-                if (string.IsNullOrWhiteSpace(message)) ChatManager.SendConsoleMessage(TargetClient, "Message was empty.");
+                if (string.IsNullOrWhiteSpace(message))
+                    ChatManager.SendConsoleMessage(TargetClient, "Message was empty.");
                 else
                 {
-                    ServerClient toFind = ChatManagerHelper.GetUserFromName(ChatManagerHelper.GetUsernameFromMention(Command[1]));
+                    ServerClient toFind =
+                        ChatManagerHelper.GetUserFromName(ChatManagerHelper.GetUsernameFromMention(Command[1]));
                     if (toFind == null) ChatManager.SendConsoleMessage(TargetClient, "User was not found.");
                     else
                     {
                         //Don't allow players to send wispers to themselves
-                        if (toFind == TargetClient) ChatManager.SendConsoleMessage(TargetClient, "Can't send a whisper to yourself.");
+                        if (toFind == TargetClient)
+                            ChatManager.SendConsoleMessage(TargetClient, "Can't send a whisper to yourself.");
                         else
                         {
                             ChatData chatData = new ChatData();
@@ -146,101 +151,75 @@ namespace GameServer.Commands
                 ChatManager.SendConsoleMessage(TargetClient, "Unsufficient permissions.");
                 return;
             }
-            
-            string userLabelToKick = Command[1];
-            
-            if (TargetClient.UserFile.Label == userLabelToKick)
+
+            string UidToKick = Command[1];
+
+            if (TargetClient.UserFile.Uid == Command[1])
             {
-                ChatManager.SendConsoleMessage(TargetClient, "You can't kick yourself.");
+                ChatManager.SendConsoleMessage(TargetClient, "You can not kick yourself.");
                 return;
             }
 
-            ServerClient[] foundUsers = ChatCommandsHelper.GetConnectedClientsFromLabel(userLabelToKick);
-
-            
-            if (!foundUsers.Any())
+            ServerClient foundUser = ChatManagerHelper.GetUserFromName(UidToKick);
+            if (foundUser == null)
             {
-                ChatManager.SendConsoleMessage(TargetClient, "User is offline or doesn't exist");
+                ChatManager.SendConsoleMessage(TargetClient, "UID was not found or user is offline.");
                 return;
             }
 
-            if (foundUsers.Length > 1 && Command[2].ToLower() != "any")
-            {
-                ChatManager.SendConsoleMessage(TargetClient, $"Found multiple users with nickname {userLabelToKick},\n" +
-                    $"type \"any\" after username if you want to kick them all");
-                return;
-            }
-
-            if (Command[2].ToLower() != "any")
-            {
-                foreach(ServerClient client in foundUsers)
-                {
-                    ResponseShortcutManager.SendIllegalPacket(client, "kicked from the server", false);
-                }
-                ChatManager.SendConsoleMessage(TargetClient, $"Kicked {foundUsers.Length} users.");
-            }
-            else
-            {
-                ResponseShortcutManager.SendIllegalPacket(foundUsers[0], "kicked from the server", false);
-                ChatManager.SendConsoleMessage(TargetClient, $"Kicked {userLabelToKick}.");
-            }
+            foundUser.Listener.DisconnectFlag = true;
+            ChatManager.SendConsoleMessage(TargetClient,
+                $"Kicked {foundUser.UserFile.Label} ({foundUser.UserFile.Uid}).");
         }
-        
+
         public static void BanCommandAction()
         {
             if (TargetClient == null) return;
 
-            string userLabelToBan = Command[1];
-            if (userLabelToBan == null)
+            if (!TargetClient.UserFile.IsAdmin)
             {
-                ChatManager.SendConsoleMessage(TargetClient, "Enter username of the user");
-            }
-            
-            if (TargetClient.UserFile.Label == userLabelToBan)
-            {
-                ChatManager.SendConsoleMessage(TargetClient, "You can't ban yourself.");
+                ChatManager.SendConsoleMessage(TargetClient, "Unsufficient permissions.");
                 return;
             }
 
-            ServerClient[] foundUsers = ChatCommandsHelper.GetConnectedClientsFromLabel(userLabelToBan);
-
-            
-            if (!foundUsers.Any())
+            if (String.IsNullOrEmpty(Command[1]))
             {
-                ChatManager.SendConsoleMessage(TargetClient, "User is offline or doesn't exist");
+                ChatManager.SendConsoleMessage(TargetClient, "Unknown arguments, enter UID of user.");
+            }
+
+            string UidToBan = Command[1];
+
+            if (TargetClient.UserFile.Uid == Command[1])
+            {
+                ChatManager.SendConsoleMessage(TargetClient, "You can not ban yourself.");
                 return;
             }
 
-            if (foundUsers.Length > 1 && Command[2].ToLower() != "any")
+            UserFile foundUser = UserManagerH.GetUserFileFromName(UidToBan);
+            if (foundUser == null)
             {
-                ChatManager.SendConsoleMessage(TargetClient, $"Found multiple users with nickname {userLabelToKick},\n" +
-                                                             $"type \"any\" after username if you want to ban them all");
-                return;
+                ChatManager.SendConsoleMessage(TargetClient, "User with this UID was not found");
             }
-
-            if (Command[2].ToLower() != "any")
-            {
-                foreach(ServerClient client in foundUsers)
-                {
-                    UserManager.BanPlayerFromName(client.UserFile.Uid);
-                }
-                ChatManager.SendConsoleMessage(TargetClient, $"Banned {foundUsers.Length} users.");
-            }
+            UserManager.BanPlayerFromName(foundUser.Uid);
+            ChatManager.SendConsoleMessage(TargetClient,
+                $"Banned {foundUser.Label} ({foundUser.Uid}).");
+        }
+        public static void ListCommandAction()
+        {
+            if (TargetClient == null) return;
             else
             {
-                UserManager.BanPlayerFromName(foundUsers[0].UserFile.Uid);
-                ChatManager.SendConsoleMessage(TargetClient, $"Banned {userLabelToKick}.");
+                if (!TargetClient.UserFile.IsAdmin)
+                {
+                    ChatManager.SendConsoleMessage(TargetClient, "Unsufficient permissions.");
+                    return;
+                }
+                ServerNetwork.Instance.GetConnectedClientsSafe();
+                List<string> messagesToSend = new List<string> { "List of online players:" };
+                foreach (ServerClient client in ServerNetwork.Instance.GetConnectedClientsSafe())
+                    messagesToSend.Add($"{client.UserFile.Label} - {client.UserFile.Uid}");
+                foreach (string str in messagesToSend) ChatManager.SendConsoleMessage(TargetClient, str);
             }
         }
-    }
-
-    public static class ChatCommandsHelper
-    {
-        public static ServerClient[] GetConnectedClientsFromLabel(string label)
-        {
-            return ServerNetwork.Instance.GetConnectedClientsSafe().Where(c => c.UserFile.Label == label).ToArray();
-        }
-        
-        public static ServerClient[] ValidateInputOfUser(string label)[]
     }
 }

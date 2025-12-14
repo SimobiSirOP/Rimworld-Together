@@ -173,7 +173,6 @@ namespace GameServer.Managers
         {
             return ServerNetwork.Instance.GetConnectedClientFromUid(username);
         }
-
         public static CommandBase GetCommandFromName(string commandName)
         {
             return ChatCommands.commands.ToArray().FirstOrDefault(x => x.Prefix == commandName);
@@ -193,6 +192,7 @@ namespace GameServer.Managers
                 else InformationDisplayer.DisplayChatMap(username, message);
             }
         }
+        
     }
 }
 
